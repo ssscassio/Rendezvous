@@ -265,14 +265,32 @@ double brute_all(double *A, int N, float x0, float y0, float z0, float xl0, floa
 }
 
 int main(){
+    system("clear");
     double A[13];
     float  gama,x0,y0,z0,xl0,yl0,zl0,vex,vey,vez,w,ve;
-    printf("Secione o caso que desenha buscar:\n1) Encontrar ve para Y e X conhecidos\n2) Encontrar Y para ve e X conhecidos\n3) Encontrar X para Y e ve conhecidos\n");
-    int selecao;
+    printf("Secione o caso que deseja buscar:\n1) Encontrar ve para Y e X conhecidos\n2) Encontrar Y para ve e X conhecidos\n3) Encontrar X para Y e ve conhecidos\n4) Legenda de variaveis\n");
+    int selecao =1;
     FILE *arq;
 
     do{
       scanf("%d",&selecao);
+      if(selecao !=1 && selecao!=2 && selecao!=3 && selecao != 4){
+        printf("Selecione os valores 1, 2 ou 3 para buscar os valores de Gama \n" );
+      }
+      if(selecao == 4){
+        printf("\n\n ve = Velocidade de exaustao\n" );
+        printf("Y (Gama)\n" );
+        printf("X (Chi)\n" );
+        printf("x0 = Posicao inicial no eixo x \n" );
+        printf("y0 = Posicao inicial no eixo y \n" );
+        printf("z0 = Posicao inicial no eixo z \n" );
+        printf("xl0 = Derivada da posicao inicial no eixo x \n" );
+        printf("yl0 = Derivada da posicao inicial no eixo y \n" );
+        printf("zl0 = Derivada da posicao inicial no eixo z \n" );
+        printf("W = Derivada da posicao inicial no eixo z \n" );
+        printf("\n\n Secione o caso que deseja buscar:\n1) Encontrar ve para Y e X conhecidos\n2) Encontrar Y para ve e X conhecidos\n3) Encontrar X para Y e ve conhecidos\n4) Legenda de variaveis\n");
+
+      }
     }while(selecao !=1 && selecao!=2 && selecao!=3);
 
     printf("Digite os valores de x0, y0, z0, xl0, yl0, zl0 e w respectivamente:\n");
