@@ -28,3 +28,19 @@ Para executar o código execute o comando:
 ./rendezvous input1.dat input2.dat >output.dat
 
 ```
+
+###Modo Debug
+Para executar o código em modo Debug e encontrar o valor da função de Rendezvous para apenas 1 conjunto de dados especifivo, necessita de um arquivo com os seguintes conjuntos de dados.
+Dispostos em uma unica linha do arquivo:
+```
+Tempo Alpha Beta X0 y0 z0 r0 xl0 yl0 zl0 |Vi| xf yf zf rf dxf dyf dzf |Vf| gama chi ve vex vey vez
+```
+
+o arquivo de saida conterá linhas correspondentes a cada uma das variaveis durante o processo de Debug as quais podem ser comparadas com os resultados obtidos através do arquivo `.xlsx` dentro do caminho `Projeto/Teste`
+
+Para executar o código em modo debug execute o comando:
+```
+./rendezvous debug debugInput.in > debug.out
+```
+Sendo o parâmetro *debug* obrigatório como segundo parâmetro da execução e o parâmetro seguinte sendo o arquivo caminho do arquivo de dados de entrada.
+

@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 //Declaração de constantes
 #define MI 398600.4418
@@ -15,7 +16,7 @@
 #define _USE_MATH_DEFINES
 #define E 2.71828
 
-bool DEBUG = false;
+int DEBUG = 0;
 //Funções usadas para calculo de Rendezvous
 double ln (double x) {
     double result;
@@ -44,6 +45,9 @@ double brute_A (int N, double x0, double y0, double z0, double xl0, double yl0, 
     //Por mudança de base Ln((X+1)/X) = log((X+1)/X)/log(euler)
     result += (2*vex*ln((X+1)/X))/w;
 
+    if(DEBUG){
+        printf("A: %lf\n", result);
+    }
     return result;
 }
 
@@ -66,6 +70,9 @@ double brute_B (int N, double x0, double y0, double z0, double xl0, double yl0, 
     //Por mudança de base Ln((X+1)/X) = log((X+1)/X)/log(euler)
     result += vey*(ln((X+1)/X))/w;
 
+    if(DEBUG){
+        printf("B: %lf\n", result);
+    }
     return result;
 }
 
@@ -85,6 +92,9 @@ double brute_C (int N, double x0, double y0, double z0, double xl0, double yl0, 
         }
     }
 
+    if(DEBUG){
+        printf("Cn*n^%d: %lf\n",a, result);
+    }
     return result;
 }
 
@@ -95,6 +105,9 @@ double brute_D (int N, double x0, double y0, double z0, double xl0, double yl0, 
     result -= (2*vex* ln((X+1)/X))/w;
     result += 4*y0 - 2*xl0/w;
 
+    if(DEBUG){
+        printf("D: %lf\n", result);
+    }
     return result;
 }
 
@@ -105,6 +118,9 @@ double brute_E (int N, double x0, double y0, double z0, double xl0, double yl0, 
     result -=  3*vex*ln((X+1)/X);
     result +=  6*w*y0 - 3*xl0;
 
+    if(DEBUG){
+        printf("E: %lf\n", result);
+    }
     return result;
 }
 
@@ -125,6 +141,9 @@ double brute_F(int N, double x0, double y0, double z0, double xl0, double yl0, d
     }
     result -= vex/n*Y;
 
+    if(DEBUG){
+        printf("Fn*n^%d: %lf\n",a, result);
+    }
     return result;
 }
 
@@ -145,6 +164,9 @@ double brute_G (int N, double x0, double y0, double z0, double xl0, double yl0, 
     //Por mudança de base Ln((X+1)/X) = log((X+1)/X)/log(euler)
     result+= 2*vey*(ln((X+1)/X))/w;
 
+    if(DEBUG){
+        printf("G: %lf\n", result);
+    }
     return result;
 }
 
@@ -162,7 +184,10 @@ double brute_H (int N, double x0, double y0, double z0, double xl0, double yl0, 
         }
     }
     result += z0;
-
+    
+    if(DEBUG){
+        printf("H: %lf\n", result);
+    }
     return result;
 }
 
@@ -183,6 +208,9 @@ double brute_I (int N, double x0, double y0, double z0, double xl0, double yl0, 
     //Por mudança de base Ln((X+1)/X) = log((X+1)/X)/log(euler)
     result -= vez*(ln((X+1)/X))/w;
 
+    if(DEBUG){
+        printf("I: %lf\n", result);
+    }
     return result;
 }
 
@@ -200,39 +228,58 @@ double brute_J(int N, double x0, double y0, double z0, double xl0, double yl0, d
         }
     }
 
+    if(DEBUG){
+        printf("Jn*n^%d: %lf\n",a, result);
+    }
     return result;
 }
 
 double brute_all(double *A, int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int X, double w, double vex, double vey, double vez){
 
-
+    double a, B, C, D, e, F, G, H, I, J;    
     double result = 0;
+    //Calculando valores de A, B, C, D, E, F, G, H, I e J
+    a = brute_A(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez); 
+    B = brute_B(N,x0,y0,z0,xl0,yl0,zl0,  Y, X, w, 0, vex, vey,vez);
+    D = brute_D(N,x0,y0,z0,xl0,yl0,zl0,Y, X, w, 0, vex, vey,vez);
+    e = brute_E(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez);
+    G = brute_G(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez);
+    H = brute_H(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez);
+    I = brute_I(N,x0,y0,z0,xl0,yl0,zl0,  Y, X, w, 0, vex, vey,vez);
 
      //Calculando inicialmente a soma (A1² + A3² + A5²)
-    A[1]  = 2*brute_A(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez)*w + brute_E(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez) - Y*brute_F(N,x0,y0,z0, xl0,yl0, zl0, Y, X, w, 1, vex, vey,vez);
-    A[3]  = brute_B(N,x0,y0,z0,xl0,yl0,zl0,  Y, X, w, 0, vex, vey,vez)*w  - Y*brute_F(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez);
-    A[5]  = brute_I(N,x0,y0,z0,xl0,yl0,zl0,  Y, X, w, 0, vex, vey,vez)*w  - Y*brute_F(N,x0,y0,z0,xl0,yl0,zl0,  Y, X, w, 0, vex, vey,vez)*w+Y*brute_J(N,x0,y0,z0,xl0, yl0, zl0, Y, X, w, 0, vex, vey,vez)*w  - Y*brute_F(N,x0,y0,z0,xl0,yl0, zl0, Y, X, w, 1, vex, vey,vez);;
+    A[1]  = 2*a*w + e - Y*brute_F(N,x0,y0,z0, xl0,yl0, zl0, Y, X, w, 1, vex, vey,vez);
+    A[3]  = B*w - Y*brute_F(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez);
+    A[5]  = I*w  - Y*brute_F(N,x0,y0,z0,xl0,yl0,zl0,  Y, X, w, 0, vex, vey,vez)*w+Y*brute_J(N,x0,y0,z0,xl0, yl0, zl0, Y, X, w, 0, vex, vey,vez)*w  - Y*brute_F(N,x0,y0,z0,xl0,yl0, zl0, Y, X, w, 1, vex, vey,vez);
 
      //Calculando inicialmente a soma (A2² + A4² + A6²)
-    A[2]  = brute_G(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez) - 2*brute_B(N,x0,y0,z0,xl0,yl0,zl0,  Y, X, w, 0, vex, vey,vez) + brute_F(N,x0,y0,z0,xl0,yl0, zl0, Y, X, w, 0, vex, vey,vez);
-    A[4]  = brute_A(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez) +brute_D(N,x0,y0,z0,xl0,yl0,zl0,Y, X, w, 0, vex, vey,vez) + brute_C(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez);
-    A[6]  = brute_H(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez) - brute_J(N,x0,y0,z0,xl0,yl0,zl0,  Y, X, w, 0, vex, vey,vez);
+    A[2]  = G - 2*B + brute_F(N,x0,y0,z0,xl0,yl0, zl0, Y, X, w, 0, vex, vey,vez);
+    A[4]  = a +D + brute_C(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez);
+    A[6]  = H - brute_J(N,x0,y0,z0,xl0,yl0,zl0,  Y, X, w, 0, vex, vey,vez);
 
      //Calculando inicialmente a soma (A7² + A9² + A11²)
-    A[7]  = 2*brute_B(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez)*w*w + Y*Y*brute_F(N,x0,y0,z0, xl0, yl0, zl0, Y, X, w, 2, vex, vey,vez);
-    A[9]  = Y*Y*brute_C(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 2, vex, vey,vez) - brute_A(N,x0,y0,z0,xl0,yl0,zl0,  Y, X, w, 0, vex, vey,vez)*w*w;
-    A[11] = -w*w*brute_H(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez) - Y*Y*brute_J(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 2, vex, vey,vez);
+    A[7]  = 2*B*w*w + Y*Y*brute_F(N,x0,y0,z0, xl0, yl0, zl0, Y, X, w, 2, vex, vey,vez);
+    A[9]  = Y*Y*brute_C(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 2, vex, vey,vez) - a*w*w;
+    A[11] = -w*w*H - Y*Y*brute_J(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 2, vex, vey,vez);
 
      //Calculando inicialmente a soma (A8² + A10² + A12²) A8=A1 // A10 = A3 // A12 = A5
     A[8]  = A[1];
     A[10] = A[3];
     A[12] = A[5];
+
+    //Debug
+    if(DEBUG){
+        for(int i = 1; i < 13 ; i++){
+            printf("A[%d]: %lf\n",i, A[i]);
+        }
+    }
 }
 
 double calcularDiferenca (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double gama, double chi, double w, double vex, double vey, double vez){
     double A[13];
     double a,b,c,d;
     double a1,a2,a3,a4,a5,a6;
+    double result;
 
     brute_all(A, 10, x0, y0, z0, xl0, yl0, zl0, gama, chi, w, vex, vey, vez);
     a1 = 1/(A[1]*A[1]+A[3]*A[3]+A[5]*A[5]);
@@ -241,12 +288,29 @@ double calcularDiferenca (int N, double x0, double y0, double z0, double xl0, do
     a4 = A[8]*A[8]+A[10]*A[10]+A[12]*A[12];
     a5 = A[1]*A[2] + A[3]*A[4] + A[5]*A[6];
     a6 = A[7]*A[8] + A[9]*A[10] + A[11]*A[12];
+
+    if(DEBUG){
+        printf("a1: %lf\n", a1);
+        printf("a2: %lf\n", a2);
+        printf("a3: %lf\n", a3);
+        printf("a4: %lf\n", a4);
+        printf("a5: %lf\n", a5);
+        printf("a6: %lf\n", a6);
+    }
     a = a5*a1;
     b = a1*a2;
     c = a6*a3;
     d = a3*a4;
-
-    return pow(b-d,2)-4*(a-c)*(b*c-a*d);
+    result = pow(b-d,2)-4*(a-c)*(b*c-a*d);
+    
+    if(DEBUG){
+        printf("a: %lf\n", a);
+        printf("b: %lf\n", b);
+        printf("c: %lf\n", c);
+        printf("d: %lf\n", d);
+        printf("Result: %lf\n", result);
+    }
+    return result;
 }
 
 void calcularRendezvousBisseccao(double x0, double y0, double z0, double xl0, double yl0, double zl0, double w) {
@@ -329,16 +393,21 @@ int main (int argc, char **argv){
         return 1;
     }
 
-    if(argv[1] == 'debug'){
-        DEBUG = true;
+    if(strcmp(argv[1],"debug") == 0){
+        DEBUG = 1;
     }
 
     if(DEBUG){
         char * nomeDoArquivo = argv[2];
         FILE *file;
         file = fopen(nomeDoArquivo, "r"); 
-        fscanf(file,"%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf", &tempo, &alpha, &beta, &x0, &y0, &z0, &r0, &xl0, &yl0, &zl0, &vi, &xf, &yf, &zf, &rf, &dxf, &dyf, &zf, &vf , &gama, &chi, &ve, &vex, &vey, &vez);
-
+        fscanf(file,"%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf", &tempo, &alpha, &beta, &x0, &y0, &z0, &r0, &xl0, &yl0, &zl0, &vi, &xf, &yf, &zf, &rf, &dxf, &dyf, &zf, &vf , &gama, &chi, &ve, &vex, &vey, &vez);
+        raio = EARTH_RADIUS + r0;
+        w = sqrt(MI/(raio*raio*raio));
+        printf("===Dados de Entrada===\n");
+        printf(" N: %d\n x0: %lf\n y0: %lf\n z0: %lf\n xl0: %lf\n yl0: %lf\n zl0: %lf\n gama: %lf\n chi: %lf\n r0: %lf\n ve: %lf\n vex: %lf\n vey: %lf\n vez: %lf\n",10, x0, y0, z0, xl0, yl0, zl0, gama, chi, r0, ve, vex, vey, vez);
+        printf("======================\n");
+        calcularDiferenca(10, x0, y0, z0, xl0, yl0, zl0, gama, chi, w, vex, vey, vez);
         return 0;
     }
 
