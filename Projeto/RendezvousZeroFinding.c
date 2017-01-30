@@ -14,6 +14,8 @@
 #define EARTH_RADIUS 6378.0
 #define _USE_MATH_DEFINES
 #define E 2.71828
+
+bool DEBUG = false;
 //Funções usadas para calculo de Rendezvous
 double ln (double x) {
     double result;
@@ -319,10 +321,25 @@ int main (int argc, char **argv){
     
     //Variaveis inutilizadas (Por enquanto)
     double tempo, alpha, beta, vi, xf, yf, zf, rf, dxf, dyf, dzf, vf;
+    //Variaveis para modo Debug
+    double gama, chi, ve, vex, vey, vez;
 
     if(argc == 1){
         printf("Passe o nome dos arquivos de input como parâmetro\n");
         return 1;
+    }
+
+    if(argv[1] == 'debug'){
+        DEBUG = true;
+    }
+
+    if(DEBUG){
+        char * nomeDoArquivo = argv[2];
+        FILE *file;
+        file = fopen(nomeDoArquivo, "r"); 
+        fscanf(file,"%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf", &tempo, &alpha, &beta, &x0, &y0, &z0, &r0, &xl0, &yl0, &zl0, &vi, &xf, &yf, &zf, &rf, &dxf, &dyf, &zf, &vf , &gama, &chi, &ve, &vex, &vey, &vez);
+
+        return 0;
     }
 
     for(int i = 1; i < argc; i++){ //Tentativa de leitura de cada um dos arquivos passados como parâmetro
