@@ -18,32 +18,28 @@
 
 int DEBUG = 0;
 //Funções usadas para calculo de Rendezvous
-double ln (double x) {
-    double result;
-
-    result = log(x)/log(E);
-
-    return result;
-}
 
 //Encontrando coeficiente A
-double brute_A (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int X, double w, int a, double vex, double vey, double vez) {
+double brute_A (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez) {
     double result = 0;
     int n;
+    double X, aux;
+    double sum = 0;
+    X = (double) aux2;
 
+    result += (2*xl0)/w - 3*y0 +((2*vex)/w)*log((X+1)/X);
+     
     //Calculo do somatorio
     for (n = 1; n <= N; n++) {
+        aux = (1/(n*pow(X, n)))*(1/(1+pow(((n*Y)/w),2)))*(((2*vex)/w)+((n*Y*vey)/(w*w)));
         if (n%2 == 0) {
-            result -= 2*vex/(n*pow(X,n)*w*(1+pow((n*Y/w),2)));
-            result -= (n*Y*vey)/(n*pow(X,n)*pow(w,2)*(1+pow((n*Y/w),2)));
+            sum -= aux;
         } else {
-            result += 2*vex/(n*pow(X,n)*(1+pow((n*Y/w),2)));
-            result += (n*Y*vey)/(n*pow(X,n)*pow(w,2)*(1+pow((n*Y/w),2)));
+            sum += aux;
         }
     }
-    result += 2*xl0/w - 3*y0;
-    //Por mudança de base Ln((X+1)/X) = log((X+1)/X)/log(euler)
-    result += (2*vex*ln((X+1)/X))/w;
+
+    result-= sum;
 
     if(DEBUG){
         printf("A: %lf\n", result);
@@ -52,23 +48,25 @@ double brute_A (int N, double x0, double y0, double z0, double xl0, double yl0, 
 }
 
 // Encontrando coeficiente B
-double brute_B (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int X, double w, int a, double vex, double vey, double vez) {
+double brute_B (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez) {
     double result = 0;
+    double sum = 0;
     int n;
+    double X,aux;
+    X = (double) aux2;
+
+    result += yl0/w + (vey/w)*log((X+1)/X);
 
     //Calculo do somatorio
     for (n = 1; n <= N; n++) {
+        aux = (1/(n*pow(X,n)))*(1/(1+pow(((n*Y)/w),2)))*(vey/w + (2*n*Y*vex)/(w*w));
         if (n%2 == 0) {//iteração Par
-            result += 2*vex*n*Y/(n*pow(X,n)*pow(w,2)*(1+pow((n*Y/w),2)));
-            result += vey/(n*pow(X,n)*w*(1+pow((n*Y/w),2)));
-        } else {//iteração Impar
-            result -= 2*n*vex*Y/(n*pow(X,n)*pow(w,2)*(1+pow((n*Y/w),2)));
-            result -= vey/(n*pow(X,n)*w*(1+pow((n*Y/w),2)));
+            aux = -aux;
         }
+        sum += aux;
     }
-    result += yl0/w;
-    //Por mudança de base Ln((X+1)/X) = log((X+1)/X)/log(euler)
-    result += vey*(ln((X+1)/X))/w;
+
+    result+= sum;
 
     if(DEBUG){
         printf("B: %lf\n", result);
@@ -77,20 +75,23 @@ double brute_B (int N, double x0, double y0, double z0, double xl0, double yl0, 
 }
 
 // Encontrando coeficiente C
-double brute_C (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int X, double w, int a, double vex, double vey, double vez){
+double brute_C (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez){
     double result = 0;
+    double sum = 0;
     int n;
+    double X,aux;
+    X = (double) aux2;
 
     //Calculo do somatorio
     for (n = 1; n <= N; n++) {
+        aux = pow(n,a)*vex/(n*pow(X,n)*(1+pow((n*Y/w),2))) + n*Y*pow(n,a)*vey/(n*pow(X,n)*pow(w,2)*(1+pow((n*Y/w),2)));
         if (n%2 == 0) {
-            result += pow(n,a)*vex/(n*pow(X,n)*(1+pow((n*Y/w),2)));
-            result += n*Y*pow(n,a)*vey/(n*pow(X,n)*pow(w,2)*(1+pow((n*Y/w),2)));
-        } else {
-            result -= pow(n,a)*vex/(n*pow(X,n)*(1+pow((n*Y/w),2)));
-            result -= n*Y*pow(n,a)*vey/(n*pow(X,n)*pow(w,2)*(1+pow((n*Y/w),2)));
+            aux = -aux;
         }
+
+        result +=aux;   
     }
+
 
     if(DEBUG){
         printf("Cn*n^%d: %lf\n",a, result);
@@ -99,10 +100,14 @@ double brute_C (int N, double x0, double y0, double z0, double xl0, double yl0, 
 }
 
 // Encontrando coeficiente D
-double brute_D (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int X, double w, int a, double vex, double vey, double vez) {
+double brute_D (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez) {
     double result = 0;
+    double sum = 0;
+    int n;
+    double X,aux;
+    X = (double) aux2;
 
-    result -= (2*vex* ln((X+1)/X))/w;
+    result -= (2*vex* log((X+1)/X))/w;
     result += 4*y0 - 2*xl0/w;
 
     if(DEBUG){
@@ -112,10 +117,14 @@ double brute_D (int N, double x0, double y0, double z0, double xl0, double yl0, 
 }
 
 // Encontrando coeficiente E
-double brute_E (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int X, double w, int a, double vex, double vey, double vez) {
+double brute_E (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez) {
     double result = 0;
+    double sum = 0;
+    int n;
+    double X,aux;
+    X = (double) aux2;
 
-    result -=  3*vex*ln((X+1)/X);
+    result -=  3*vex*log((X+1)/X);
     result +=  6*w*y0 - 3*xl0;
 
     if(DEBUG){
@@ -125,21 +134,27 @@ double brute_E (int N, double x0, double y0, double z0, double xl0, double yl0, 
 }
 
 // Encontrando coeficiente F
-double brute_F(int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int X, double w, int a, double vex, double vey, double vez) {
+double brute_F(int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez) {
     double result = 0;
+    double sum = 0;
     int n;
+    double X,aux;
+    X = (double) aux2;
+
 
     //Calculo do somatorio
     for (n = 1; n <= N; n++) {
-        if (n%2 ==0) {
-            result += pow(n,a)*vex*4/(n*pow(X,n)*n*Y*(1+pow((n*Y/w),2)));
-            result += 2*vey*pow(n,a)/(n*pow(X,n)*w*(1+pow((n*Y/w),2)));
-        } else {
-            result -= pow(n,a)*vex*4/(n*pow(X,n)*n*Y*(1+pow((n*Y/w),2)));
-            result -= 2*vey*pow(n,a)/(n*pow(X,n)*w*(1+pow((n*Y/w),2)));
+        aux = (1/(n*pow(X,n)))*((2*vey)/w + (4*vex)/(n*Y))/((1+pow((n*Y)/w,2)));
+        if (n%2 == 0) {
+            aux = - aux;
         }
+        aux -= vex/(n*Y);
+        aux *= pow(n,a);
+        sum += aux;
     }
-    result -= vex/n*Y;
+
+    result = sum;
+ 
 
     if(DEBUG){
         printf("Fn*n^%d: %lf\n",a, result);
@@ -148,21 +163,23 @@ double brute_F(int N, double x0, double y0, double z0, double xl0, double yl0, d
 }
 
 // Encontrando coeficiente G
-double brute_G (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int X, double w, int a, double vex, double vey, double vez) {
+double brute_G (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez) {
     double result = 0;
+    double sum = 0;
     int n;
+    double X,aux;
+    X = (double) aux2;
 
+    result= 2*yl0/w + x0 + (2*vey*(log((X+1)/X)))/w;
     //Calculo do somatorio
     for (n = 1; n <= N; n++) {
+        aux = 3*vex/(pow(n,2)*pow(X,n)*w);
         if (n%2 == 0) {
-            result -= 3*vex/(pow(n,2)*pow(X,n)*w);
-        } else {
-            result += 3*vex/(pow(n,2)*pow(X,n)*w);
+            aux = -aux;
         }
+        sum +=aux;
     }
-    result+= 2*yl0/w + x0;
-    //Por mudança de base Ln((X+1)/X) = log((X+1)/X)/log(euler)
-    result+= 2*vey*(ln((X+1)/X))/w;
+    result-=sum;
 
     if(DEBUG){
         printf("G: %lf\n", result);
@@ -171,20 +188,24 @@ double brute_G (int N, double x0, double y0, double z0, double xl0, double yl0, 
 }
 
 // Encontrando coeficiente H
-double brute_H (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int X, double w, int a, double vex, double vey, double vez) {
+double brute_H (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez) {
     double result = 0;
+    double sum = 0;
     int n;
+    double X,aux;
+    X = (double) aux2;
     
+    result = z0;
     //Calculo do somatorio
     for (n = 1; n <= N; n++) {
+        aux = ((vez*Y)/(pow(X,n)*pow(w,2)))/(1+pow((n*Y)/w,2));
         if (n%2 == 0) {
-            result += vez*Y/(pow(w,2)*pow(X,n)*(1+pow((n*Y/w),2)));
-        } else {
-            result -= vez*Y/(pow(w,2)*pow(X,n)*(1+pow((n*Y/w),2)));
+            aux = -aux;
         }
+        sum += aux;
     }
-    result += z0;
-    
+    result += sum;
+
     if(DEBUG){
         printf("H: %lf\n", result);
     }
@@ -192,21 +213,25 @@ double brute_H (int N, double x0, double y0, double z0, double xl0, double yl0, 
 }
 
 // Encontrando coeficiente I
-double brute_I (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int X, double w, int a, double vex, double vey, double vez) {
+double brute_I (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez) {
     double result = 0;
+    double sum = 0;
     int n;
+    double X,aux;
+    X = (double) aux2;
     
+    result = zl0/w - (vez/w)*(log((X+1)/X));
+
     //Calculo do somatorio
     for (n = 1; n <= N; n++) {
+        aux = ((vez)/(pow(n,2)*pow(X,n)*w))/(1+pow((n*Y)/w,2));
         if (n%2 == 0) {
-            result += vez/(pow(n,2)*pow(X,n)*w*(1+pow((n*Y/w),2)));
-        } else {
-            result -= vez/(pow(n,2)*pow(X,n)*w*(1+pow((n*Y/w),2)));
+            aux = -aux;
         }
+        sum += aux;
     }
-    result += zl0/w;
-    //Por mudança de base Ln((X+1)/X) = log((X+1)/X)/log(euler)
-    result -= vez*(ln((X+1)/X))/w;
+    //Por mudança de base log((X+1)/X) = log((X+1)/X)/log(euler)
+    result += sum;
 
     if(DEBUG){
         printf("I: %lf\n", result);
@@ -215,21 +240,26 @@ double brute_I (int N, double x0, double y0, double z0, double xl0, double yl0, 
 }
 
 // Encontrando coeficiente J
-double brute_J(int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int X, double w, int a, double vex, double vey, double vez){
+double brute_J(int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez){
     double result = 0;
+    double sum = 0;
     int n;
+    double X,aux;
+    X = (double) aux2;
 
-    //Calculo do somatorio
-    for(n = 1; n <= N; n++){
+    for (n = 1; n <= N; n++) {
+        aux = vez/(n*pow(X,n)*w)/(1+pow((n*Y)/w,2));
         if (n%2 == 0) {
-            result += vez*pow(n,a)/(n*pow(X,n)*(1+pow((n*Y/w),2)));
-        } else {
-            result -= vez*pow(n,a)/(n*pow(X,n)*(1+pow((n*Y/w),2)));
+            aux = - aux;
         }
+        aux *= pow(n,a);
+        sum += aux;
     }
-
+    
+    result = sum;
+    
     if(DEBUG){
-        printf("Jn*n^%d: %lf\n",a, result);
+        printf("Jn*n^%d: %12.10f\n",a, result);
     }
     return result;
 }
@@ -249,8 +279,8 @@ double brute_all(double *A, int N, double x0, double y0, double z0, double xl0, 
 
      //Calculando inicialmente a soma (A1² + A3² + A5²)
     A[1]  = 2*a*w + e - Y*brute_F(N,x0,y0,z0, xl0,yl0, zl0, Y, X, w, 1, vex, vey,vez);
-    A[3]  = B*w - Y*brute_F(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez);
-    A[5]  = I*w  - Y*brute_F(N,x0,y0,z0,xl0,yl0,zl0,  Y, X, w, 0, vex, vey,vez)*w+Y*brute_J(N,x0,y0,z0,xl0, yl0, zl0, Y, X, w, 0, vex, vey,vez)*w  - Y*brute_F(N,x0,y0,z0,xl0,yl0, zl0, Y, X, w, 1, vex, vey,vez);
+    A[3]  = B*w - Y*brute_C(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 1, vex, vey,vez);
+    A[5]  = I*w +Y*brute_J(N,x0,y0,z0,xl0, yl0, zl0, Y, X, w, 1, vex, vey,vez);
 
      //Calculando inicialmente a soma (A2² + A4² + A6²)
     A[2]  = G - 2*B + brute_F(N,x0,y0,z0,xl0,yl0, zl0, Y, X, w, 0, vex, vey,vez);
