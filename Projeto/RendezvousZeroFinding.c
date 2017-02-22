@@ -77,7 +77,6 @@ double brute_B (int N, double x0, double y0, double z0, double xl0, double yl0, 
 // Encontrando coeficiente C
 double brute_C (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez){
     double result = 0;
-    double sum = 0;
     int n;
     double X,aux;
     X = (double) aux2;
@@ -102,9 +101,7 @@ double brute_C (int N, double x0, double y0, double z0, double xl0, double yl0, 
 // Encontrando coeficiente D
 double brute_D (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez) {
     double result = 0;
-    double sum = 0;
-    int n;
-    double X,aux;
+    double X;
     X = (double) aux2;
 
     result -= (2*vex* log((X+1)/X))/w;
@@ -119,9 +116,7 @@ double brute_D (int N, double x0, double y0, double z0, double xl0, double yl0, 
 // Encontrando coeficiente E
 double brute_E (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez) {
     double result = 0;
-    double sum = 0;
-    int n;
-    double X,aux;
+    double X;
     X = (double) aux2;
 
     result -=  3*vex*log((X+1)/X);
@@ -264,10 +259,9 @@ double brute_J(int N, double x0, double y0, double z0, double xl0, double yl0, d
     return result;
 }
 
-double brute_all(double *A, int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int X, double w, double vex, double vey, double vez){
+void brute_all(double *A, int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int X, double w, double vex, double vey, double vez){
 
-    double a, B, C, D, e, F, G, H, I, J;    
-    double result = 0;
+    double a, B, D, e, G, H, I;    
     //Calculando valores de A, B, C, D, E, F, G, H, I e J
     a = brute_A(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez); 
     B = brute_B(N,x0,y0,z0,xl0,yl0,zl0,  Y, X, w, 0, vex, vey,vez);
@@ -345,7 +339,6 @@ double calcularDiferenca (int N, double x0, double y0, double z0, double xl0, do
 
 void calcularRendezvousBisseccao(double x0, double y0, double z0, double xl0, double yl0, double zl0, double w) {
     double vex,vey,vez; //Variaveis Iteraveis //Componentes das Velocidades de exaustao
-    double ve; //Modulo da velocidade de exaustao
     double chi; //Variavel Iteravel
     double gama; //Variavel Iteravel
 
@@ -394,10 +387,10 @@ void calcularRendezvousBisseccao(double x0, double y0, double z0, double xl0, do
                             yInicial = yMedio;
                         }
                         iteracoes++;
-                    } while(abs(yMedio) > 0.0001 && iteracoes <20);
+                    } while(fabs(yMedio) > 0.0001 && iteracoes <20);
                     //Conjuntos de valoes no final do laço dizem respeito a um conjunto ideal
                     printf("Encontrou yMedio: %lf, gama: %lf, vex: %lf, chi %lf \n", yMedio, gama, xMedio, chi); //<----Mudar por salvar valores em arquivo---->
-                } else if (abs(yInicial) < 0.0001) {
+                } else if (fabs(yInicial) < 0.0001) {
                     printf("Encontrou yInicial: %lf, gama: %lf, vex: %lf, chi %lf \n", yInicial, gama, xInicial, chi); //<----Mudar por salvar valores em arquivo---->
                 }
             }
@@ -414,7 +407,7 @@ int main (int argc, char **argv){
     double r0; //Altitude <-----Verificar ----->
     
     //Variaveis inutilizadas (Por enquanto)
-    double tempo, alpha, beta, vi, xf, yf, zf, rf, dxf, dyf, dzf, vf;
+    double tempo, alpha, beta, vi, xf, yf, zf, rf, dxf, dyf, vf;
     //Variaveis para modo Debug
     double gama, chi, ve, vex, vey, vez;
 
