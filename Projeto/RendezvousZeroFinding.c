@@ -351,7 +351,6 @@ void calcularRendezvousBisseccao(double x0, double y0, double z0, double xl0, do
     //Y diz respeito ao resultado da diferença
     double xInicial, xFinal, xMedio, yMedio, yInicial, yFinal;
 
-    /*Parte para leitura das variaveis nos arquivo<------A fazer ----->*/
     printf("Valores de entrara: x0 y0 z0 xl0 yl0 zl0 w\n");
     printf("%lf %lf %lf %lf %lf %lf\n\n", x0,y0,z0, xl0, yl0, zl0);
 
@@ -366,33 +365,36 @@ void calcularRendezvousBisseccao(double x0, double y0, double z0, double xl0, do
                 vex = vey = vez = xInicial;
                 yInicial = calcularDiferenca(10, x0, y0, z0, xl0, yl0, zl0, gama, chi, w, vex, vey, vez);
 
-                //Calculando diferença no ponto xFinal
-                vex = vey = vez = xFinal;
-                yFinal = calcularDiferenca(10, x0, y0, z0, xl0, yl0, zl0, gama, chi, w, vex, vey, vez);
+                printf("Encontrou yInicial: %lf, gama: %lf, vex: %lf, chi %lf \n", yInicial, gama, xInicial, chi); //<----Mudar por salvar valores em arquivo---->
+                // if (fabs(yInicial) < 0.0001){
+                // }
+                // //Calculando diferença no ponto xFinal
+                // vex = vey = vez = xFinal;
+                // yFinal = calcularDiferenca(10, x0, y0, z0, xl0, yl0, zl0, gama, chi, w, vex, vey, vez);
 
-                //Verifica se existe uma mudança de sinal entre os dois pontos 
-                //(Indicativo de possivel raiz)
-                if(yInicial*yFinal <=0) {
-                    iteracoes = 0;
+                // //Verifica se existe uma mudança de sinal entre os dois pontos 
+                // //(Indicativo de possivel raiz)
+                // if(yInicial*yFinal <=0) {
+                //     iteracoes = 0;
                     
-                    do { //Iterar até o limite de iterações ou até achar um valor exatamete com precisão 10^-4
-                        xMedio = (xInicial+xFinal)/2; //Pegar o valor de X entre os dois limites
-                        vex = vey = vez = xMedio;
-                        yMedio = calcularDiferenca(10, x0, y0, z0, xl0, yl0, zl0, gama, chi, w, vex, vey, vez);
-                        if( yMedio*yInicial < 0) {//Mudança de sinal ocorre entre o limite inferior e o ponto medio
-                            xFinal = xMedio;
-                            yFinal = yMedio;
-                        } else { //Mudança de sinal ocorre entre o limite superior e o ponto medio
-                            xInicial = xMedio;
-                            yInicial = yMedio;
-                        }
-                        iteracoes++;
-                    } while(fabs(yMedio) > 0.0001 && iteracoes <20);
-                    //Conjuntos de valoes no final do laço dizem respeito a um conjunto ideal
-                    printf("Encontrou yMedio: %lf, gama: %lf, vex: %lf, chi %lf \n", yMedio, gama, xMedio, chi); //<----Mudar por salvar valores em arquivo---->
-                } else if (fabs(yInicial) < 0.0001) {
-                    printf("Encontrou yInicial: %lf, gama: %lf, vex: %lf, chi %lf \n", yInicial, gama, xInicial, chi); //<----Mudar por salvar valores em arquivo---->
-                }
+                //     do { //Iterar até o limite de iterações ou até achar um valor exatamete com precisão 10^-4
+                //         xMedio = (xInicial+xFinal)/2; //Pegar o valor de X entre os dois limites
+                //         vex = vey = vez = xMedio;
+                //         yMedio = calcularDiferenca(10, x0, y0, z0, xl0, yl0, zl0, gama, chi, w, vex, vey, vez);
+                //         if( yMedio*yInicial < 0) {//Mudança de sinal ocorre entre o limite inferior e o ponto medio
+                //             xFinal = xMedio;
+                //             yFinal = yMedio;
+                //         } else { //Mudança de sinal ocorre entre o limite superior e o ponto medio
+                //             xInicial = xMedio;
+                //             yInicial = yMedio;
+                //         }
+                //         iteracoes++;
+                //     } while(fabs(yMedio) > 0.0001 && iteracoes <20);
+                //     //Conjuntos de valoes no final do laço dizem respeito a um conjunto ideal
+                //     printf("Encontrou yMedio: %lf, gama: %lf, vex: %lf, chi %lf \n", yMedio, gama, xMedio, chi); //<----Mudar por salvar valores em arquivo---->
+                // } else if (fabs(yInicial) < 0.0001) {
+                //     printf("Encontrou yInicial: %lf, gama: %lf, vex: %lf, chi %lf \n", yInicial, gama, xInicial, chi); //<----Mudar por salvar valores em arquivo---->
+                // }
             }
         }
     }
