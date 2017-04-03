@@ -337,7 +337,7 @@ double calcularDiferenca (int N, double x0, double y0, double z0, double xl0, do
     return result;
 }
 
-void calcularRendezvousBisseccao(double x0, double y0, double z0, double xl0, double yl0, double zl0, double w) {
+void calcularRendezvousBisseccao(FILE * file, double x0, double y0, double z0, double xl0, double yl0, double zl0, double w) {
     double vex,vey,vez; //Variaveis Iteraveis //Componentes das Velocidades de exaustao
     double chi; //Variavel Iteravel
     double gama; //Variavel Iteravel
@@ -351,9 +351,9 @@ void calcularRendezvousBisseccao(double x0, double y0, double z0, double xl0, do
     //Y diz respeito ao resultado da diferença
     double xInicial, xFinal, xMedio, yMedio, yInicial, yFinal;
 
-    printf("Valores de entrara:\n x0; y0; z0; xl0; yl0; zl0; w;\n");
-    printf("%lf; %lf; %lf; %lf; %lf; %lf;\n\n", x0,y0,z0, xl0, yl0, zl0);
-    printf("gama; chi; vex; y;");
+    fprintf(file, "Valores de entrara:\n x0; y0; z0; xl0; yl0; zl0; w;\n");
+    fprintf(file, "%lf; %lf; %lf; %lf; %lf; %lf;\n\n", x0,y0,z0, xl0, yl0, zl0);
+    fprintf(file, "gama; chi; vex; y;");
 
     for (i = -14; i <= 2 ; i++) {//Iterando gama
         gama = pow(10,i);
@@ -366,7 +366,7 @@ void calcularRendezvousBisseccao(double x0, double y0, double z0, double xl0, do
                 vex = vey = vez = xInicial;
                 yInicial = calcularDiferenca(10, x0, y0, z0, xl0, yl0, zl0, gama, chi, w, vex, vey, vez);
 
-                printf("%.14lf; %lf; %lf; %lf; \n", gama, chi, xInicial, yInicial); //<----Mudar por salvar valores em arquivo---->
+                fprintf(file, "%.14lf; %lf; %lf; %lf; \n", gama, chi, xInicial, yInicial); //<----Mudar por salvar valores em arquivo---->
                 // if (fabs(yInicial) < 0.0001){
                 // }
                 // //Calculando diferença no ponto xFinal
@@ -441,7 +441,8 @@ int main (int argc, char **argv){
         /*Leitura do Arquivo*/
         char * nomeDoArquivo = argv[i];
         FILE *file;
-        file = fopen(nomeDoArquivo, "r"); 
+        file = fopen(nomeDoArquivo, "r");
+        int b = 0;
         if (file == NULL) { //Verifica se o caminho existe
             break;
         } else {
@@ -449,10 +450,14 @@ int main (int argc, char **argv){
             while((fscanf(file,"%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf", &tempo, &alpha, &beta, &x0, &y0, &z0, &r0, &xl0, &yl0, &zl0, &vi, &xf, &yf, &zf, &rf, &dxf, &dyf, &zf, &vf)) != EOF){ //Enquanto não for o fim do arquivo
                 // Tempo Alpha Beta X0 y0 z0 r0 xl0 yl0 zl0 |Vi| xf yf zf rf dxf dyf dzf |Vf|
                 // 456.000000 104 89 -0.725655 2.910444 0.052357 3.000000 0.005108 -0.006719 -0.000104 0.008441 0.000000 0.000000 0.000000 0.000000 -0.001749 -0.005737 -0.000121 0.005999
+                char nomeDoArquivoDeEscrita[256];
+                sprintf( nomeDoArquivoDeEscrita, "output-%d", b);
                 raio = EARTH_RADIUS + r0;
                 w = sqrt(MI/(raio*raio*raio));
-                calcularRendezvousBisseccao(x0,y0,z0,xl0,yl0,zl0,w);
-
+                FILE *fileToWrite;
+                fileToWrite = fopen(nomeDoArquivoDeEscrita, "w");
+                calcularRendezvousBisseccao(fileToWrite,x0,y0,z0,xl0,yl0,zl0,w);
+                b++;
 
             }
         }
