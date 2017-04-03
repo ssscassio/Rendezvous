@@ -265,24 +265,23 @@ double __device__ calcularDiferenca (int N, double x0, double y0, double z0, dou
 
 void __global__ calcularRendezvousDevice(double d_x0,double d_y0,double d_z0,double d_xl0,double d_yl0,double d_zl0,double d_w){
 
-  double Y = blockIdx.x; //Y(Gama) recebe o valor x atual do bloco;
-  double X = threadIdx.x; //X(Chi) recebe o valor y atual do thread;
+  double gama = blockIdx.x; //Y(Gama) recebe o valor x atual do bloco;
+  double chi = threadIdx.x; //X(Chi) recebe o valor y atual do thread;
   double ve = blockIdx.y; //ve||vex(Velocidade de exaustão) recebe o valor z atual do thread;
+
+  double yInicial = calcularDiferenca(10, d_x0, d_y0, d_z0, d_xl0, d_yl0, d_zl0, gama, chi, d_w, ve, ve, ve);
 
 
 }
 
 void calcularRendezvous(double x0, double y0, double z0, double xl0, double yl0, double zl0, double w) {
-    double vex,vey,vez; //Variaveis Iteraveis //Componentes das Velocidades de exaustao
-    double chi; //Variavel Iteravel
-    double gama; //Variavel Iteravel
 
     int tx = 16; //Número de iterações em Gama (de -14 a 2 com passo 1)
-    int ty = 99; //Número de iterações em Chi (de 1 a 100 com passo 1)
-    int tz = 99; //Número de iterações em ve (de 0.1 a 10 com passo 0.1)
-    dim3 numBlocks(tx,tz);
+    int ty = 99; //Número de iterações em ve (de 0.1 a 10 com passo 0.1)
+    int tz = 99; //Número de iterações em Chi (de 1 a 100 com passo 1)
+    dim3 numBlocks(tx,ty);
     size_t size = sizeof(double);
-    dim3 threadsPerBlock(ty);
+    dim3 threadsPerBlock(tz);
 
     //Alocando a memória das variáveis no Device
     cudaMalloc((void**)&d_x0, size);

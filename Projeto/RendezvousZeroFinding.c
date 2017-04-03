@@ -351,8 +351,9 @@ void calcularRendezvousBisseccao(double x0, double y0, double z0, double xl0, do
     //Y diz respeito ao resultado da diferença
     double xInicial, xFinal, xMedio, yMedio, yInicial, yFinal;
 
-    printf("Valores de entrara: x0 y0 z0 xl0 yl0 zl0 w\n");
-    printf("%lf %lf %lf %lf %lf %lf\n\n", x0,y0,z0, xl0, yl0, zl0);
+    printf("Valores de entrara:\n x0; y0; z0; xl0; yl0; zl0; w;\n");
+    printf("%lf; %lf; %lf; %lf; %lf; %lf;\n\n", x0,y0,z0, xl0, yl0, zl0);
+    printf("gama; chi; vex; y;");
 
     for (i = -14; i <= 2 ; i++) {//Iterando gama
         gama = pow(10,i);
@@ -365,7 +366,7 @@ void calcularRendezvousBisseccao(double x0, double y0, double z0, double xl0, do
                 vex = vey = vez = xInicial;
                 yInicial = calcularDiferenca(10, x0, y0, z0, xl0, yl0, zl0, gama, chi, w, vex, vey, vez);
 
-                printf("Encontrou yInicial: %lf, gama: %lf, vex: %lf, chi %lf \n", yInicial, gama, xInicial, chi); //<----Mudar por salvar valores em arquivo---->
+                printf("%.14lf; %lf; %lf; %lf; \n", gama, chi, xInicial, yInicial); //<----Mudar por salvar valores em arquivo---->
                 // if (fabs(yInicial) < 0.0001){
                 // }
                 // //Calculando diferença no ponto xFinal
