@@ -351,9 +351,9 @@ void calcularRendezvousBisseccao(FILE * file, double x0, double y0, double z0, d
     //Y diz respeito ao resultado da diferença
     double xInicial, xFinal, xMedio, yMedio, yInicial, yFinal;
 
-    fprintf(file, "Valores de entrara:\n x0; y0; z0; xl0; yl0; zl0; w;\n");
-    fprintf(file, "%lf; %lf; %lf; %lf; %lf; %lf;\n\n", x0,y0,z0, xl0, yl0, zl0);
-    fprintf(file, "gama; chi; vex; y;");
+    fprintf(file, "x0, y0, z0, xl0, yl0, zl0, w,\n");
+    fprintf(file, "%lf, %lf, %lf, %lf, %lf, %lf,\n\n", x0,y0,z0, xl0, yl0, zl0);
+    fprintf(file, "gama, chi, vex, y,\n");
 
     for (i = -14; i <= 2 ; i++) {//Iterando gama
         gama = pow(10,i);
@@ -366,7 +366,7 @@ void calcularRendezvousBisseccao(FILE * file, double x0, double y0, double z0, d
                 vex = vey = vez = xInicial;
                 yInicial = calcularDiferenca(10, x0, y0, z0, xl0, yl0, zl0, gama, chi, w, vex, vey, vez);
 
-                fprintf(file, "%.14lf; %lf; %lf; %lf; \n", gama, chi, xInicial, yInicial); //<----Mudar por salvar valores em arquivo---->
+                fprintf(file, "%.14lf, %lf, %lf, %lf,\n", gama, chi, xInicial, yInicial); //<----Mudar por salvar valores em arquivo---->
                 // if (fabs(yInicial) < 0.0001){
                 // }
                 // //Calculando diferença no ponto xFinal
@@ -451,7 +451,7 @@ int main (int argc, char **argv){
                 // Tempo Alpha Beta X0 y0 z0 r0 xl0 yl0 zl0 |Vi| xf yf zf rf dxf dyf dzf |Vf|
                 // 456.000000 104 89 -0.725655 2.910444 0.052357 3.000000 0.005108 -0.006719 -0.000104 0.008441 0.000000 0.000000 0.000000 0.000000 -0.001749 -0.005737 -0.000121 0.005999
                 char nomeDoArquivoDeEscrita[256];
-                sprintf( nomeDoArquivoDeEscrita, "output-%d", b);
+                sprintf( nomeDoArquivoDeEscrita, "output-%d.csv", b);
                 raio = EARTH_RADIUS + r0;
                 w = sqrt(MI/(raio*raio*raio));
                 FILE *fileToWrite;
