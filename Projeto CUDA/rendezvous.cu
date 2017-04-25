@@ -4,6 +4,8 @@
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 
+#define MI 398600.4418
+#define EARTH_RADIUS 6378.0
 using namespace std;
 
 double __device__ brute_A (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez) {
@@ -17,7 +19,7 @@ double __device__ brute_A (int N, double x0, double y0, double z0, double xl0, d
      
     //Calculo do somatorio
     for (n = 1; n <= N; n++) {
-        aux = (1/(n*pow(X, n)))*(1/(1+pow(((n*Y)/w),2)))*(((2*vex)/w)+((n*Y*vey)/(w*w)));
+        aux = (1/(n*powf(X, n)))*(1/(1+powf(((n*Y)/w),2)))*(((2*vex)/w)+((n*Y*vey)/(w*w)));
         if (n%2 == 0) {
             sum -= aux;
         } else {
@@ -42,7 +44,7 @@ double __device__ brute_B (int N, double x0, double y0, double z0, double xl0, d
 
     //Calculo do somatorio
     for (n = 1; n <= N; n++) {
-        aux = (1/(n*pow(X,n)))*(1/(1+pow(((n*Y)/w),2)))*(vey/w + (2*n*Y*vex)/(w*w));
+        aux = (1/(n*powf(X,n)))*(1/(1+powf(((n*Y)/w),2)))*(vey/w + (2*n*Y*vex)/(w*w));
         if (n%2 == 0) {//iteração Par
             aux = -aux;
         }
@@ -63,7 +65,7 @@ double __device__ brute_C (int N, double x0, double y0, double z0, double xl0, d
 
     //Calculo do somatorio
     for (n = 1; n <= N; n++) {
-        aux = pow(n,a)*vex/(n*pow(X,n)*(1+pow((n*Y/w),2))) + n*Y*pow(n,a)*vey/(n*pow(X,n)*pow(w,2)*(1+pow((n*Y/w),2)));
+        aux = powf(n,a)*vex/(n*powf(X,n)*(1+powf((n*Y/w),2))) + n*Y*powf(n,a)*vey/(n*powf(X,n)*powf(w,2)*(1+powf((n*Y/w),2)));
         if (n%2 == 0) {
             aux = -aux;
         }
@@ -96,7 +98,7 @@ double __device__ brute_E (int N, double x0, double y0, double z0, double xl0, d
 }
 
 // Encontrando coeficiente F
-double brute_F(int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez) {
+double __device__ brute_F(int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez) {
     double result = 0;
     double sum = 0;
     int n;
@@ -106,12 +108,12 @@ double brute_F(int N, double x0, double y0, double z0, double xl0, double yl0, d
 
     //Calculo do somatorio
     for (n = 1; n <= N; n++) {
-        aux = (1/(n*pow(X,n)))*((2*vey)/w + (4*vex)/(n*Y))/((1+pow((n*Y)/w,2)));
+        aux = (1/(n*powf(X,n)))*((2*vey)/w + (4*vex)/(n*Y))/((1+powf((n*Y)/w,2)));
         if (n%2 == 0) {
             aux = - aux;
         }
         aux -= vex/(n*Y);
-        aux *= pow(n,a);
+        aux *= powf(n,a);
         sum += aux;
     }
 
@@ -130,7 +132,7 @@ double __device__ brute_G (int N, double x0, double y0, double z0, double xl0, d
     result= 2*yl0/w + x0 + (2*vey*(log((X+1)/X)))/w;
     //Calculo do somatorio
     for (n = 1; n <= N; n++) {
-        aux = 3*vex/(pow(n,2)*pow(X,n)*w);
+        aux = 3*vex/(powf(n,2)*powf(X,n)*w);
         if (n%2 == 0) {
             aux = -aux;
         }
@@ -151,7 +153,7 @@ double __device__ brute_H (int N, double x0, double y0, double z0, double xl0, d
     result = z0;
     //Calculo do somatorio
     for (n = 1; n <= N; n++) {
-        aux = ((vez*Y)/(pow(X,n)*pow(w,2)))/(1+pow((n*Y)/w,2));
+        aux = ((vez*Y)/(powf(X,n)*powf(w,2)))/(1+powf((n*Y)/w,2));
         if (n%2 == 0) {
             aux = -aux;
         }
@@ -173,7 +175,7 @@ double __device__ brute_I (int N, double x0, double y0, double z0, double xl0, d
 
     //Calculo do somatorio
     for (n = 1; n <= N; n++) {
-        aux = ((vez)/(pow(n,2)*pow(X,n)*w))/(1+pow((n*Y)/w,2));
+        aux = ((vez)/(powf(n,2)*powf(X,n)*w))/(1+powf((n*Y)/w,2));
         if (n%2 == 0) {
             aux = -aux;
         }
@@ -193,11 +195,11 @@ double __device__ brute_J(int N, double x0, double y0, double z0, double xl0, do
     X = (double) aux2;
 
     for (n = 1; n <= N; n++) {
-        aux = vez/(n*pow(X,n)*w)/(1+pow((n*Y)/w,2));
+        aux = vez/(n*powf(X,n)*w)/(1+powf((n*Y)/w,2));
         if (n%2 == 0) {
             aux = - aux;
         }
-        aux *= pow(n,a);
+        aux *= powf(n,a);
         sum += aux;
     }
     
@@ -216,6 +218,7 @@ void __device__ brute_all(double *A, int N, double x0, double y0, double z0, dou
     G = brute_G(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez);
     H = brute_H(N,x0,y0,z0,xl0,yl0,zl0, Y, X, w, 0, vex, vey,vez);
     I = brute_I(N,x0,y0,z0,xl0,yl0,zl0,  Y, X, w, 0, vex, vey,vez);
+    __syncthreads();
 
      //Calculando inicialmente a soma (A1² + A3² + A5²)
     A[1]  = 2*a*w + e - Y*brute_F(N,x0,y0,z0, xl0,yl0, zl0, Y, X, w, 1, vex, vey,vez);
@@ -258,20 +261,25 @@ double __device__ calcularDiferenca (int N, double x0, double y0, double z0, dou
     b = a1*a2;
     c = a6*a3;
     d = a3*a4;
-    result = pow(b-d,2)-4*(a-c)*(b*c-a*d);
+    result = powf(b-d,2)-4*(a-c)*(b*c-a*d);
 
     return result;
 }
 
 void __global__ calcularRendezvousDevice(double d_x0,double d_y0,double d_z0,double d_xl0,double d_yl0,double d_zl0,double d_w){
 
+
   double gama = blockIdx.x; //Y(Gama) recebe o valor x atual do bloco;
   double chi = threadIdx.x; //X(Chi) recebe o valor y atual do thread;
   double ve = blockIdx.y; //ve||vex(Velocidade de exaustão) recebe o valor z atual do thread;
+  //Conversão de indexs para valores reais
+  gama = gama-14;
+  gama = powf(10,gama);
+  ve++;
+  ve = ve/10;
 
   double yInicial = calcularDiferenca(10, d_x0, d_y0, d_z0, d_xl0, d_yl0, d_zl0, gama, chi, d_w, ve, ve, ve);
-
-
+  
 }
 
 void calcularRendezvous(double x0, double y0, double z0, double xl0, double yl0, double zl0, double w) {
@@ -283,6 +291,8 @@ void calcularRendezvous(double x0, double y0, double z0, double xl0, double yl0,
     size_t size = sizeof(double);
     dim3 threadsPerBlock(tz);
 
+    double d_x0, d_y0, d_z0, d_xl0, d_yl0, d_zl0, d_w;
+
     //Alocando a memória das variáveis no Device
     cudaMalloc((void**)&d_x0, size);
     cudaMalloc((void**)&d_y0, size);
@@ -291,7 +301,8 @@ void calcularRendezvous(double x0, double y0, double z0, double xl0, double yl0,
     cudaMalloc((void**)&d_yl0, size);
     cudaMalloc((void**)&d_zl0, size);
     cudaMalloc((void**)&d_w, size);
-
+    
+    printf("%lf %lf %lf %lf %lf %lf %lf\n", x0 , y0, z0, xl0, yl0, zl0, w);
     //Copiando as variáveis do host para o Device
     cudaMemcpy(&d_x0, &x0, size, cudaMemcpyHostToDevice);
     cudaMemcpy(&d_y0, &y0, size, cudaMemcpyHostToDevice);
@@ -302,6 +313,7 @@ void calcularRendezvous(double x0, double y0, double z0, double xl0, double yl0,
     cudaMemcpy(&d_w, &w, size, cudaMemcpyHostToDevice);
 
     calcularRendezvousDevice<<<numBlocks, threadsPerBlock>>>(d_x0,d_y0,d_z0,d_xl0,d_yl0,d_zl0,d_w);
+    cudaDeviceSynchronize();
 
 }
 
@@ -315,8 +327,6 @@ int main(int argc, char **argv){
     
     //Variaveis inutilizadas (Por enquanto)
     double tempo, alpha, beta, vi, xf, yf, zf, rf, dxf, dyf, vf;
-    //Variaveis para modo Debug
-    double gama, chi, ve, vex, vey, vez;
 
     if(argc == 1){
         printf("Passe o nome dos arquivos de input como parâmetro\n");
