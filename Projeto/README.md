@@ -1,4 +1,4 @@
-#Rendezvous Serial
+# Rendezvous Serial
 
 Projeto para Encontrar as variáveis físicas capazes de tornar o Rendezvous (Encontro com posição e velocidade relativa iguais a 0) de um veiculo espacial com um detrito em orbita possível.
 
@@ -6,7 +6,7 @@ Projeto para Encontrar as variáveis físicas capazes de tornar o Rendezvous (En
 
 Estas instruções permitirão, caso tenha previamente o conjuto de variáveis que tornem o encontro possível, encontrar o conjunto de variáveis físicas que tornam o rendezvous possível para cada um desses conjutos de variáveis de entrada.
 
-###Compilando
+### Compilando
 
 Para compilar o projeto:
 
@@ -14,7 +14,7 @@ Para compilar o projeto:
 gcc -o rendezvous RendezvousZeroFinding.c -lm -std=c99 -Wall -O3
 ```
 
-###Executando o projeto
+### Executando o projeto
 
 Necessita de pelo menos um arquivo de entrada *input.dat* no qual cada uma das linhas representa um conjunto de variáveis de entrada das quais são respectivamente:
 ```
@@ -29,7 +29,7 @@ Para executar o código execute o comando:
 
 ```
 
-###Modo Debug
+### Modo Debug
 Para executar o código em modo Debug e encontrar o valor da função de Rendezvous para apenas 1 conjunto de dados especifivo, necessita de um arquivo com os seguintes conjuntos de dados.
 Dispostos em uma unica linha do arquivo:
 ```
