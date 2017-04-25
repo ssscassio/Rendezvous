@@ -240,7 +240,7 @@ void __device__ brute_all(double *A, int N, double x0, double y0, double z0, dou
     A[10] = A[3];
     A[12] = A[5];
 
-    __syncthreads();
+
 }
 
 double __device__ calcularDiferenca (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double gama, double chi, double w, double vex, double vey, double vez){
@@ -266,53 +266,58 @@ double __device__ calcularDiferenca (int N, double x0, double y0, double z0, dou
     return result;
 }
 
-void __global__ calcularRendezvousDevice(double d_x0,double d_y0,double d_z0,double d_xl0,double d_yl0,double d_zl0,double d_w){
+void __global__ calcularRendezvousDevice(double *d_variables){
 
+  double d_x0  = d_variables[0];
+  double d_y0  = d_variables[1];
+  double d_z0  = d_variables[2];
+  double d_xl0 = d_variables[3];
+  double d_yl0 = d_variables[4];
+  double d_zl0 = d_variables[5];
+  double d_w   = d_variables[6];
 
   double gama = blockIdx.x; //Y(Gama) recebe o valor x atual do bloco;
-  double chi = threadIdx.x; //X(Chi) recebe o valor y atual do thread;
-  double ve = blockIdx.y; //ve||vex(Velocidade de exaustão) recebe o valor z atual do thread;
+  double ve   = blockIdx.y; //ve||vex(Velocidade de exaustão) recebe o valor y atual do bloco;
+  double chi  = threadIdx.x; //X(Chi) recebe o valor x atual do thread;
   //Conversão de indexs para valores reais
+  chi++;
   gama = gama-14;
   gama = powf(10,gama);
   ve++;
   ve = ve/10;
 
   double yInicial = calcularDiferenca(10, d_x0, d_y0, d_z0, d_xl0, d_yl0, d_zl0, gama, chi, d_w, ve, ve, ve);
+  printf("%.14lf %lf %lf %lf\n",gama, chi, ve, yInicial);
   
 }
 
 void calcularRendezvous(double x0, double y0, double z0, double xl0, double yl0, double zl0, double w) {
 
-    int tx = 16; //Número de iterações em Gama (de -14 a 2 com passo 1)
-    int ty = 99; //Número de iterações em ve (de 0.1 a 10 com passo 0.1)
-    int tz = 99; //Número de iterações em Chi (de 1 a 100 com passo 1)
+    int tx = 17; //Número de iterações em Gama (de -14 a 2 com passo 1)
+    int ty = 100; //Número de iterações em ve (de 0.1 a 10 com passo 0.1)
+    int tz = 100; //Número de iterações em Chi (de 1 a 100 com passo 1)
     dim3 numBlocks(tx,ty);
-    size_t size = sizeof(double);
-    dim3 threadsPerBlock(tz);
+    size_t size = 7*sizeof(double);
+    int threadsPerBlock = tz;
 
-    double d_x0, d_y0, d_z0, d_xl0, d_yl0, d_zl0, d_w;
+
+    double *h_variables = (double *)malloc(7*sizeof(double));
+    h_variables[0] = x0;
+    h_variables[1] = y0;
+    h_variables[2] = z0;
+    h_variables[3] = xl0;
+    h_variables[4] = yl0;
+    h_variables[5] = zl0;
+    h_variables[6] = w;
 
     //Alocando a memória das variáveis no Device
-    cudaMalloc((void**)&d_x0, size);
-    cudaMalloc((void**)&d_y0, size);
-    cudaMalloc((void**)&d_z0, size);
-    cudaMalloc((void**)&d_xl0, size);
-    cudaMalloc((void**)&d_yl0, size);
-    cudaMalloc((void**)&d_zl0, size);
-    cudaMalloc((void**)&d_w, size);
-    
-    printf("%lf %lf %lf %lf %lf %lf %lf\n", x0 , y0, z0, xl0, yl0, zl0, w);
-    //Copiando as variáveis do host para o Device
-    cudaMemcpy(&d_x0, &x0, size, cudaMemcpyHostToDevice);
-    cudaMemcpy(&d_y0, &y0, size, cudaMemcpyHostToDevice);
-    cudaMemcpy(&d_z0, &z0, size, cudaMemcpyHostToDevice);
-    cudaMemcpy(&d_xl0, &xl0, size, cudaMemcpyHostToDevice);
-    cudaMemcpy(&d_yl0, &yl0, size, cudaMemcpyHostToDevice);
-    cudaMemcpy(&d_zl0, &zl0, size, cudaMemcpyHostToDevice);
-    cudaMemcpy(&d_w, &w, size, cudaMemcpyHostToDevice);
+    double *d_variables;
+    cudaMalloc((void **) &d_variables, size);
 
-    calcularRendezvousDevice<<<numBlocks, threadsPerBlock>>>(d_x0,d_y0,d_z0,d_xl0,d_yl0,d_zl0,d_w);
+    //Copiando as variáveis do host para o Device
+    cudaMemcpy(d_variables, h_variables, size, cudaMemcpyHostToDevice);
+
+    calcularRendezvousDevice<<<numBlocks, threadsPerBlock>>>(d_variables);
     cudaDeviceSynchronize();
 
 }
