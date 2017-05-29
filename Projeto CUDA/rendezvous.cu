@@ -277,8 +277,8 @@ void __global__ calcularRendezvousDevice(double *d_variables){
   double d_w   = d_variables[6];
 
   double gama = blockIdx.x; //Y(Gama) recebe o valor x atual do bloco;
-  double ve   = blockIdx.y; //ve||vex(Velocidade de exaustão) recebe o valor y atual do bloco;
-  double chi  = threadIdx.x; //X(Chi) recebe o valor x atual do thread;
+  double chi  = blockIdx.y; //X(Chi) recebe o valor y atual do bloco;
+  double ve   = threadIdx.x; //ve||vex(Velocidade de exaustão) recebe o valor x atual da thread;
   //Conversão de indexs para valores reais
   chi++;
   gama = gama-14;
@@ -294,8 +294,8 @@ void __global__ calcularRendezvousDevice(double *d_variables){
 void calcularRendezvous(double x0, double y0, double z0, double xl0, double yl0, double zl0, double w) {
 
     int tx = 17; //Número de iterações em Gama (de -14 a 2 com passo 1)
-    int ty = 100; //Número de iterações em ve (de 0.1 a 10 com passo 0.1)
-    int tz = 100; //Número de iterações em Chi (de 1 a 100 com passo 1)
+    int ty = 100; //Número de iterações em Chi (de 1 a 100 com passo 1)
+    int tz = 100; //Número de iterações em ve (de 0.1 a 10 com passo 0.1)
     dim3 numBlocks(tx,ty);
     size_t size = 7*sizeof(double);
     int threadsPerBlock = tz;
@@ -338,6 +338,10 @@ int main(int argc, char **argv){
         return 1;
     }
 
+    //Aumentando o tamanho do Buffer usado para transferir os dados internos do Device para o Host
+    size_t size = 1000000000*sizeof(double);
+    cudaDeviceSetLimit(cudaLimitPrintfFifoSize, size);
+    
     for(int i = 1; i < argc; i++){ //Tentativa de leitura de cada um dos arquivos passados como parâmetro
         /*Leitura do Arquivo*/
         char * nomeDoArquivo = argv[i];
