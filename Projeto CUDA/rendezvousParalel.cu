@@ -3,7 +3,7 @@
 #include <math.h>
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
-
+#include "cuPrintf.cu"
 #define MI 398600.4418
 #define EARTH_RADIUS 6378.0
 using namespace std;
@@ -339,13 +339,14 @@ int main(int argc, char **argv){
     }
 
     //Aumentando o tamanho do Buffer usado para transferir os dados internos do Device para o Host
-    size_t size = 1000000000*sizeof(double);
+    
+
+    // Informação de cuPrintf.cuh // "bufferLen=1048576 1-meg - that's enough for 4096 printfs by all threads put together"
+    size_t size = 256*100*100*20; //Cada printf necessita de 256 bits 
     cudaDeviceSetLimit(cudaLimitPrintfFifoSize, size);
 
     for(int i = 1; i < argc; i++){ //Tentativa de leitura de cada um dos arquivos passados como parâmetro
         /*Leitura do Arquivo*/
-        cudaEventSynchronize(cycleDone[next_stream]);
-
         char * nomeDoArquivo = argv[i];
         FILE *file;
         file = fopen(nomeDoArquivo, "r");
@@ -354,10 +355,10 @@ int main(int argc, char **argv){
             break;
         } else {
             while((fscanf(file,"%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf", &tempo, &alpha, &beta, &x0, &y0, &z0, &r0, &xl0, &yl0, &zl0, &vi, &xf, &yf, &zf, &rf, &dxf, &dyf, &zf, &vf)) != EOF){ //Enquanto não for o fim do arquivo
-                cudaPrintfInit();
+                cudaPrintfInit(size);
                 
                 char nomeDoArquivoDeEscrita[256];
-                sprintf( nomeDoArquivoDeEscrita, "output-%d.csv", b);
+                sprintf( nomeDoArquivoDeEscrita, "%d-output-%d.csv", i, b);
                 FILE *fileToWrite;
                 fileToWrite = fopen(nomeDoArquivoDeEscrita, "w");
 
@@ -368,8 +369,10 @@ int main(int argc, char **argv){
                 calcularRendezvous(x0,y0,z0,xl0,yl0,zl0,w);
                 cudaPrintfDisplay(fileToWrite,false);
                 cudaPrintfEnd();
+		        b++;
             }
         }        
     }
 
 }
+
