@@ -26,7 +26,7 @@ Os arquivos de saida irão conter uma linha inicial contendo os valores de entra
 Para executar o código execute o comando:
 ```
 ./rendezvous input1.dat input2.dat
-
+```
 
 ### Resultados
 
