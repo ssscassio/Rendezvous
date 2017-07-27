@@ -287,7 +287,7 @@ void __global__ calcularRendezvousDevice(double *d_variables){
   ve = ve/10;
 
   double yInicial = calcularDiferenca(10, d_x0, d_y0, d_z0, d_xl0, d_yl0, d_zl0, gama, chi, d_w, ve, ve, ve);
-  cuPrintf("%.14lf %lf %lf %lf\n",gama, chi, ve, yInicial);
+  cuPrintf("%.14lf , %lf , %lf , %lf\n",gama, chi, ve, yInicial);
   
 }
 

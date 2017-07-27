@@ -2,7 +2,7 @@
     Para compilaçao:
         ex.: gcc -o rendezvous RendezvousZeroFinding.c -lm -std=c99
     Para execução:
-        ex.: ./rendezvous v-0.005-0.006.dat v-0.007-0.008.dat >saida.dat
+        ex.: ./rendezvous v-0.005-0.006.dat v-0.007-0.008.dat
 */
 
 #include <stdio.h>
@@ -451,7 +451,7 @@ int main (int argc, char **argv){
                 // Tempo Alpha Beta X0 y0 z0 r0 xl0 yl0 zl0 |Vi| xf yf zf rf dxf dyf dzf |Vf|
                 // 456.000000 104 89 -0.725655 2.910444 0.052357 3.000000 0.005108 -0.006719 -0.000104 0.008441 0.000000 0.000000 0.000000 0.000000 -0.001749 -0.005737 -0.000121 0.005999
                 char nomeDoArquivoDeEscrita[256];
-                sprintf( nomeDoArquivoDeEscrita, "output-%d.csv", b);
+                sprintf( nomeDoArquivoDeEscrita, "%d-output-%d.csv", i , b);
                 raio = EARTH_RADIUS + r0;
                 w = sqrt(MI/(raio*raio*raio));
                 FILE *fileToWrite;

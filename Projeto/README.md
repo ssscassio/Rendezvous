@@ -21,13 +21,36 @@ Necessita de pelo menos um arquivo de entrada *input.dat* no qual cada uma das l
 Tempo Alpha Beta X0 y0 z0 r0 xl0 yl0 zl0 |Vi| xf yf zf rf dxf dyf dzf |Vf|
 ``` 
 
-O arquivo de saida irá conter uma linha inicial contendo os valores de entrada e as linhas subsequentes contendo os conjuntos de icognitas físicas descobertas que satisfazem a equação.
- 
+Os arquivos de saida irão conter uma linha inicial contendo os valores de entrada e em seqeência  as icognitas físicas descobertas bem como o resultado da equação.
+
 Para executar o código execute o comando:
 ```
-./rendezvous input1.dat input2.dat >output.dat
+./rendezvous input1.dat input2.dat
+
+
+### Resultados
+
+Para cada arquivo de entrada na execução serão gerados tantos arquivos de saida quanto forem os números de linhas no arquivo
+
+Por exemplo, para a execução do comando:
+```
+./rendezvous input1.dat input2.dat
 
 ```
+Serão gerados arquivos no formato csv (Separados por virgula):
+
+```
+"1-output-0.csv"
+"1-output-0.csv"
+.
+
+"%d-output-%d.csv"
+.
+.
+"2-output-500.csv"
+```
+Nos quais os indices representam respectivamente o arquivo de entrada e a linha do arquivo
+
 
 ### Modo Debug
 Para executar o código em modo Debug e encontrar o valor da função de Rendezvous para apenas 1 conjunto de dados especifivo, necessita de um arquivo com os seguintes conjuntos de dados.
