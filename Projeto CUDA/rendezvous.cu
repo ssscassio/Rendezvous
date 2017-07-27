@@ -279,6 +279,7 @@ void __global__ calcularRendezvousDevice(double *d_variables){
   double gama = blockIdx.x; //Y(Gama) recebe o valor x atual do bloco;
   double chi  = blockIdx.y; //X(Chi) recebe o valor y atual do bloco;
   double ve   = threadIdx.x; //ve||vex(Velocidade de exaustão) recebe o valor x atual da thread;
+  //printf("%d %d %d\n", blockIdx.x, blockIdx.y, threadIdx.x);  
   //Conversão de indexs para valores reais
   chi++;
   gama = gama-14;
@@ -337,7 +338,7 @@ int main(int argc, char **argv){
         printf("Passe o nome dos arquivos de input como parâmetro\n");
         return 1;
     }
-
+    
     //Aumentando o tamanho do Buffer usado para transferir os dados internos do Device para o Host
     size_t size = 1000000000*sizeof(double);
     cudaDeviceSetLimit(cudaLimitPrintfFifoSize, size);
