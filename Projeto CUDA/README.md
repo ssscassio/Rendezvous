@@ -1,4 +1,4 @@
-# Rendezvous Serial
+# Rendezvous CUDA
 
 Projeto para Encontrar as variáveis físicas capazes de tornar o Rendezvous (Encontro com posição e velocidade relativa iguais a 0) de um veiculo espacial com um detrito em orbita possível.
 
@@ -11,7 +11,7 @@ Estas instruções permitirão, caso tenha previamente o conjuto de variáveis q
 Para compilar o projeto:
 
 ```
-gcc -o rendezvous RendezvousZeroFinding.c -lm -std=c99 -Wall -O3
+nvcc rendezvousParalel.cu -o rendezvous
 ```
 
 ### Executando o projeto
@@ -25,22 +25,29 @@ O arquivo de saida irá conter uma linha inicial contendo os valores de entrada 
  
 Para executar o código execute o comando:
 ```
-./rendezvous input1.dat input2.dat >output.dat
+./rendezvous input1.dat input2.dat
 
 ```
 
-### Modo Debug
-Para executar o código em modo Debug e encontrar o valor da função de Rendezvous para apenas 1 conjunto de dados especifivo, necessita de um arquivo com os seguintes conjuntos de dados.
-Dispostos em uma unica linha do arquivo:
-```
-Tempo Alpha Beta X0 y0 z0 r0 xl0 yl0 zl0 |Vi| xf yf zf rf dxf dyf dzf |Vf| gama chi ve vex vey vez
-```
+### Resultados
 
-o arquivo de saida conterá linhas correspondentes a cada uma das variaveis durante o processo de Debug as quais podem ser comparadas com os resultados obtidos através do arquivo `.xlsx` dentro do caminho `Projeto/Teste`
+Para cada arquivo de entrada na execução serão gerados tantos arquivos de saida quanto forem os números de linhas no arquivo
 
-Para executar o código em modo debug execute o comando:
+Por exemplo, para a execução do comando:
 ```
-./rendezvous debug debugInput.in > debug.out
-```
-Sendo o parâmetro *debug* obrigatório como segundo parâmetro da execução e o parâmetro seguinte sendo o arquivo caminho do arquivo de dados de entrada.
+./rendezvous input1.dat input2.dat
 
+```
+Serão gerados arquivos no formato csv (Separados por virgula):
+
+```
+"1-output-0.csv"
+"1-output-0.csv"
+.
+
+"%d-output-%d.csv"
+.
+.
+"2-output-500.csv"
+```
+Nos quais os indices representam respectivamente o arquivo de entrada e a linha do arquivo
