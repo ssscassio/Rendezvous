@@ -1,13 +1,26 @@
+/**
+    CUDA, rendezvousParalel.cu
+    Purpose: Calcular as variáveis físicas de um veículo espacial capazes de tornar o Rendezvous possível
+
+    @author Cássio Santos
+    @version 1.0 31/07/17 
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
+#include "cuPrintf.cu"
 
+//Declaração de constantes utilizadas para o calculo dos coeficientes
 #define MI 398600.4418
 #define EARTH_RADIUS 6378.0
 using namespace std;
 
+/**
+
+
+*/
 double __device__ brute_A (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int aux2, double w, int a, double vex, double vey, double vez) {
     double result = 0;
     int n;
@@ -279,7 +292,6 @@ void __global__ calcularRendezvousDevice(double *d_variables){
   double gama = blockIdx.x; //Y(Gama) recebe o valor x atual do bloco;
   double chi  = blockIdx.y; //X(Chi) recebe o valor y atual do bloco;
   double ve   = threadIdx.x; //ve||vex(Velocidade de exaustão) recebe o valor x atual da thread;
-  //printf("%d %d %d\n", blockIdx.x, blockIdx.y, threadIdx.x);  
   //Conversão de indexs para valores reais
   chi++;
   gama = gama-14;
@@ -288,7 +300,7 @@ void __global__ calcularRendezvousDevice(double *d_variables){
   ve = ve/10;
 
   double yInicial = calcularDiferenca(10, d_x0, d_y0, d_z0, d_xl0, d_yl0, d_zl0, gama, chi, d_w, ve, ve, ve);
-  printf("%.14lf %lf %lf %lf\n",gama, chi, ve, yInicial);
+  cuPrintf("%.14lf , %lf , %lf , %lf\n",gama, chi, ve, yInicial);
   
 }
 
@@ -338,28 +350,42 @@ int main(int argc, char **argv){
         printf("Passe o nome dos arquivos de input como parâmetro\n");
         return 1;
     }
-    
+
     //Aumentando o tamanho do Buffer usado para transferir os dados internos do Device para o Host
-    size_t size = 1000000000*sizeof(double);
-    cudaDeviceSetLimit(cudaLimitPrintfFifoSize, size);
     
+
+    // Informação de cuPrintf.cuh // "bufferLen=1048576 1-meg - that's enough for 4096 printfs by all threads put together"
+    size_t size = 256*100*100*20; //Cada printf necessita de 256 bits 
+    cudaDeviceSetLimit(cudaLimitPrintfFifoSize, size);
+
     for(int i = 1; i < argc; i++){ //Tentativa de leitura de cada um dos arquivos passados como parâmetro
         /*Leitura do Arquivo*/
         char * nomeDoArquivo = argv[i];
         FILE *file;
-        file = fopen(nomeDoArquivo, "r"); 
+        file = fopen(nomeDoArquivo, "r");
+        int b = 0;
         if (file == NULL) { //Verifica se o caminho existe
             break;
         } else {
             while((fscanf(file,"%lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf %lf", &tempo, &alpha, &beta, &x0, &y0, &z0, &r0, &xl0, &yl0, &zl0, &vi, &xf, &yf, &zf, &rf, &dxf, &dyf, &zf, &vf)) != EOF){ //Enquanto não for o fim do arquivo
+                cudaPrintfInit(size);
+                
+                char nomeDoArquivoDeEscrita[256];
+                sprintf( nomeDoArquivoDeEscrita, "%d-output-%d.csv", i, b);
+                FILE *fileToWrite;
+                fileToWrite = fopen(nomeDoArquivoDeEscrita, "w");
+
                 // Tempo Alpha Beta X0 y0 z0 r0 xl0 yl0 zl0 |Vi| xf yf zf rf dxf dyf dzf |Vf|
                 // 456.000000 104 89 -0.725655 2.910444 0.052357 3.000000 0.005108 -0.006719 -0.000104 0.008441 0.000000 0.000000 0.000000 0.000000 -0.001749 -0.005737 -0.000121 0.005999
                 raio = EARTH_RADIUS + r0;
                 w = sqrt(MI/(raio*raio*raio));
                 calcularRendezvous(x0,y0,z0,xl0,yl0,zl0,w);
-
+                cudaPrintfDisplay(fileToWrite,false);
+                cudaPrintfEnd();
+		        b++;
             }
-        }
+        }        
     }
 
 }
+

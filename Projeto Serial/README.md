@@ -11,7 +11,7 @@ Estas instruções permitirão, caso tenha previamente o conjuto de variáveis q
 Para compilar o projeto:
 
 ```
-gcc -o rendezvous RendezvousZeroFinding.c -lm -std=c99 -Wall -O3
+gcc -o rendezvous rendezvousSerial.c -lm -std=c99 -Wall -O3
 ```
 
 ### Executando o projeto
