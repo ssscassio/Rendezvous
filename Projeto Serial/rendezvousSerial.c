@@ -57,79 +57,10 @@ double brute_J (int, double, double, double, double, double, double, double, dou
 // Protótipo da função que calcula o valor dos A sufixados na equação do Rendezvous
 void brute_all(double *, int, double, double, double, double, double, double, double, int, double, double, double, double);
 
+//Protótipo da função que calcula o valor do diferença da equação de rendezvous
+double calcularDiferenca (int, double, double, double, double, double, double, double, double, double, double, double, double);
 
-
-double calcularDiferenca (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double gama, double chi, double w, double vex, double vey, double vez){
-    double A[13];
-    double a,b,c,d;
-    double a1,a2,a3,a4,a5,a6;
-    double result;
-
-    brute_all(A, 10, x0, y0, z0, xl0, yl0, zl0, gama, chi, w, vex, vey, vez);
-    a1 = 1/(A[1]*A[1]+A[3]*A[3]+A[5]*A[5]);
-    a2 = A[2]*A[2]+A[4]*A[4]+A[6]*A[6];
-    a3 = 1/(A[7]*A[7]+A[9]*A[9]+A[11]*A[11]);
-    a4 = A[8]*A[8]+A[10]*A[10]+A[12]*A[12];
-    a5 = A[1]*A[2] + A[3]*A[4] + A[5]*A[6];
-    a6 = A[7]*A[8] + A[9]*A[10] + A[11]*A[12];
-
-    a = a5*a1;
-    b = a1*a2;
-    c = a6*a3;
-    d = a3*a4;
-
-    result = pow(b-d,2)-4*(a-c)*(b*c-a*d);
-    
-    if(DEBUG){
-        printf("a1: %lf\n", a1);
-        printf("a2: %lf\n", a2);
-        printf("a3: %lf\n", a3);
-        printf("a4: %lf\n", a4);
-        printf("a5: %lf\n", a5);
-        printf("a6: %lf\n", a6);
-        printf("a: %lf\n", a);
-        printf("b: %lf\n", b);
-        printf("c: %lf\n", c);
-        printf("d: %lf\n", d);
-        printf("Result: %lf\n", result);
-    }
-    return result;
-}
-
-void calcularRendezvousBisseccao(FILE * file, double x0, double y0, double z0, double xl0, double yl0, double zl0, double w) {
-    double vex,vey,vez; //Variaveis Iteraveis //Componentes das Velocidades de exaustao
-    double chi; //Variavel Iteravel
-    double gama; //Variavel Iteravel
-
-    //Variaveis de iteração
-    int i;
-    int iteracoes;
-
-    //Variaveis para iteração por bissecção
-    //X diz respeito ao valor de Ve sendo Iterado
-    //Y diz respeito ao resultado da diferença
-    double xInicial, xFinal, xMedio, yMedio, yInicial, yFinal;
-
-    fprintf(file, "x0, y0, z0, xl0, yl0, zl0, w,\n");
-    fprintf(file, "%lf, %lf, %lf, %lf, %lf, %lf,\n\n", x0,y0,z0, xl0, yl0, zl0);
-    fprintf(file, "gama, chi, vex, y,\n");
-
-    for (i = -14; i <= 2 ; i++) {//Iterando gama
-        gama = pow(10,i);
-        for(chi = 1; chi <= 100 ; chi++) {//Iterando Chi
-            for(vex = 0.1; vex <= 10 ; vex+=0.1) {//Iterando nas componentes das velocidades de exaustão
-                xInicial = vex;
-                xFinal = vex+0.1;
-                
-                //Calculando diferença no ponto xInicial
-                vex = vey = vez = xInicial;
-                yInicial = calcularDiferenca(N_PRECISION, x0, y0, z0, xl0, yl0, zl0, gama, chi, w, vex, vey, vez);
-
-                fprintf(file, "%.14lf, %lf, %lf, %lf,\n", gama, chi, xInicial, yInicial);
-            }
-        }
-    }
-}
+void calcularRendezvous(FILE *, double, double, double, double, double, double, double);
 
 int main (int argc, char **argv){
     //Declaração das variaveis
@@ -211,11 +142,110 @@ int main (int argc, char **argv){
                 FILE *fileToWrite;
                 fileToWrite = fopen(nomeDoArquivoDeEscrita, "w");
                 
-                calcularRendezvousBisseccao(fileToWrite,x0,y0,z0,xl0,yl0,zl0,w);
+                calcularRendezvous(fileToWrite,x0,y0,z0,xl0,yl0,zl0,w);
                 b++;
             }
         }
     }
+}
+
+
+/**
+* Calcula o equação e Rendezvous e armazena os valores de entrada e os valores de cada iteração em um arquivo
+* @param file Arquivo no qual deverão ser salvos os resultdados do calculo do Rendezvous
+* @param x0 valor no eixo X da posição relativa inicial entre o satélite e o detrito
+* @param y0 valor no eixo Y da posição relativa inicial entre o satélite e o detrito
+* @param z0 valor no eixo z da posição relativa inicial entre o satélite e o detrito
+* @param xl0 valor no eixo x da velocidade relativa inicial entre o satélite e o detrito
+* @param yl0 valor no eixo y da velocidade relativa inicial entre o satélite e o detrito
+* @param zl0 valor no eixo z da velocidade relativa inicial entre o satélite e o detrito
+* @param w 
+*/
+void calcularRendezvous(FILE * file, double x0, double y0, double z0, double xl0, double yl0, double zl0, double w) {
+    double vex,vey,vez; //Variaveis Iteraveis //Componentes das Velocidades de exaustao
+    double chi; //Variavel Iteravel
+    double gama; //Variavel Gama
+
+    //Variaveis de iteração
+    int i; // Exporênte de Gama
+    
+    //Variavel para armazenar o resultado do rendezvous
+    double result;
+    //Printando cabeçalho do arquivo com parâmetros de entrada 
+    fprintf(file, "x0, y0, z0, xl0, yl0, zl0, w,\n");
+    fprintf(file, "%lf, %lf, %lf, %lf, %lf, %lf, %lf,\n\n", x0,y0,z0, xl0, yl0, zl0, w);
+    fprintf(file, "gama, chi, vex, y,\n");
+
+    for (i = -14; i <= 2 ; i++) {//Iterando gama
+        gama = pow(10,i);
+        for(chi = 1; chi <= 100 ; chi++) {//Iterando Chi
+            for(vex = 0.1; vex <= 10 ; vex+=0.1) {//Iterando nas componentes das velocidades de exaustão
+
+                //Calculando diferença no ponto xInicial
+                vey = vez = vex;
+                result = calcularDiferenca(N_PRECISION, x0, y0, z0, xl0, yl0, zl0, gama, chi, w, vex, vey, vez);
+
+                fprintf(file, "%.14lf, %lf, %lf, %lf,\n", gama, chi, vex, result);
+            }
+        }
+    }
+}
+
+
+/**
+* Calcular o valor da diferença entre os dois lados da igualdade que descrevem o Rendezvous
+* @param N Número de iterações no somatório interno (Precisão)
+* @param x0 valor no eixo X da posição relativa inicial entre o satélite e o detrito
+* @param y0 valor no eixo Y da posição relativa inicial entre o satélite e o detrito
+* @param z0 valor no eixo z da posição relativa inicial entre o satélite e o detrito
+* @param xl0 valor no eixo x da velocidade relativa inicial entre o satélite e o detrito
+* @param yl0 valor no eixo y da velocidade relativa inicial entre o satélite e o detrito
+* @param zl0 valor no eixo z da velocidade relativa inicial entre o satélite e o detrito
+* @param gama Variável física Gama a ser calculado os coeficientes A sufixados
+* @param chi - Variável física Chi a ser calculado os coeficientes A sufixados
+* @param w 
+* @param vex Variável física da Velocidade de exaustão no eixo X a ser calculado os coeficientes A sufixados
+* @param vey Variável física da Velocidade de exaustão no eixo Y a ser calculado os coeficientes A sufixados
+* @param vez Variável física da Velocidade de exaustão no eixo Z a ser calculado os coeficientes A sufixados
+* @returns o valor da diferença entre os dois lados da igualdade que descrevem o Rendezvous, quanto mais proximo de 0 significa que os valores de Gama, Chi e Ve 
+* melhor satisfazem a equação dado os valores de entrada
+*/
+double calcularDiferenca (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double gama, double chi, double w, double vex, double vey, double vez){
+    double A[13];
+    double a,b,c,d;
+    double a1,a2,a3,a4,a5,a6;
+    double result;
+
+    brute_all(A, 10, x0, y0, z0, xl0, yl0, zl0, gama, chi, w, vex, vey, vez);
+    a1 = 1/(A[1]*A[1]+A[3]*A[3]+A[5]*A[5]);
+    a2 = A[2]*A[2]+A[4]*A[4]+A[6]*A[6];
+    a3 = 1/(A[7]*A[7]+A[9]*A[9]+A[11]*A[11]);
+    a4 = A[8]*A[8]+A[10]*A[10]+A[12]*A[12];
+    a5 = A[1]*A[2] + A[3]*A[4] + A[5]*A[6];
+    a6 = A[7]*A[8] + A[9]*A[10] + A[11]*A[12];
+
+    a = a5*a1;
+    b = a1*a2;
+    c = a6*a3;
+    d = a3*a4;
+
+    //Result equivale a diferença entre os dois lados da igualdade que descrevem o Rendezvous
+    result = pow(b-d,2)-4*(a-c)*(b*c-a*d);
+    
+    if(DEBUG){
+        printf("a1: %lf\n", a1);
+        printf("a2: %lf\n", a2);
+        printf("a3: %lf\n", a3);
+        printf("a4: %lf\n", a4);
+        printf("a5: %lf\n", a5);
+        printf("a6: %lf\n", a6);
+        printf("a: %lf\n", a);
+        printf("b: %lf\n", b);
+        printf("c: %lf\n", c);
+        printf("d: %lf\n", d);
+        printf("Result: %lf\n", result);
+    }
+    return result;
 }
 
 /**
@@ -232,8 +262,8 @@ int main (int argc, char **argv){
 * @param X Chi - Variável física Chi a ser calculado os coeficientes A sufixados
 * @param w 
 * @param vex Variável física da Velocidade de exaustão no eixo X a ser calculado os coeficientes A sufixados
-* @param vex Variável física da Velocidade de exaustão no eixo Y a ser calculado os coeficientes A sufixados
-* @param vex Variável física da Velocidade de exaustão no eixo Z a ser calculado os coeficientes A sufixados
+* @param vey Variável física da Velocidade de exaustão no eixo Y a ser calculado os coeficientes A sufixados
+* @param vez Variável física da Velocidade de exaustão no eixo Z a ser calculado os coeficientes A sufixados
 */
 void brute_all(double *A, int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, int X, double w, double vex, double vey, double vez){
 
