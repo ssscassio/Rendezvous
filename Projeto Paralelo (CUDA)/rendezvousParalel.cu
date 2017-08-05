@@ -331,7 +331,6 @@ void calcularRendezvous(double x0, double y0, double z0, double xl0, double yl0,
     cudaMemcpy(d_variables, h_variables, size, cudaMemcpyHostToDevice);
 
     calcularRendezvousDevice<<<numBlocks, threadsPerBlock>>>(d_variables);
-    cudaDeviceSynchronize();
 
 }
 
@@ -355,7 +354,7 @@ int main(int argc, char **argv){
     
 
     // Informação de cuPrintf.cuh // "bufferLen=1048576 1-meg - that's enough for 4096 printfs by all threads put together"
-    size_t size = 256*100*100*20; //Cada printf necessita de 256 bits 
+    size_t size = 43520000; //Cada printf necessita de 256 bits 256*100*100*17 
     cudaDeviceSetLimit(cudaLimitPrintfFifoSize, size);
 
     for(int i = 1; i < argc; i++){ //Tentativa de leitura de cada um dos arquivos passados como parâmetro
