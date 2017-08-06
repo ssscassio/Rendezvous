@@ -39,5 +39,8 @@ Essa pasta contém um arquivo de planilha no formato .xsls e pode ser utilizado 
 Você pode verificar se tudo está correto no código Serial por exemplo, comparando o resultado da execução em modo Debug com as informações apresentadas nessa planilha
 
 ### 4. Projeto Paralelo (CUDA)
-
+Esta pasta contém os códigos desenvolvidos e necessários para a execução do projeto na arquitetura CUDA.
+Nessa pasta podem ser encontradas informações mais detelhadas de como compilar e executar o projeto
 ### 5. Projeto Serial
+Esta pasta contém o códigod desenvolvido para a execução do projeto de forma serial.
+Nessa pasta podem ser encontradas informações mais detelhadas de como compilar e executar o projeto
