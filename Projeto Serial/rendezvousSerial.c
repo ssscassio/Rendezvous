@@ -216,7 +216,14 @@ double calcularDiferenca (int N, double x0, double y0, double z0, double xl0, do
     double a1,a2,a3,a4,a5,a6;
     double result;
 
-    brute_all(A, 10, x0, y0, z0, xl0, yl0, zl0, gama, chi, w, vex, vey, vez);
+    brute_all(A, N, x0, y0, z0, xl0, yl0, zl0, gama, chi, w, vex, vey, vez);
+    
+    //a1 = 1/(A1² + A3² + A5²)
+    //a2 = (A2² + A4² + A6²)
+    //a3 = 1/(A7² + A9² + A11²)
+    //a4 = (A8² + A10² + A12²)
+    //a5 = (A1*A2 + A3*A4 + A5*A6)
+    //a6 = (A7*A8 + A9*A10 + A11*A12)
     a1 = 1/(A[1]*A[1]+A[3]*A[3]+A[5]*A[5]);
     a2 = A[2]*A[2]+A[4]*A[4]+A[6]*A[6];
     a3 = 1/(A[7]*A[7]+A[9]*A[9]+A[11]*A[11]);
@@ -230,6 +237,7 @@ double calcularDiferenca (int N, double x0, double y0, double z0, double xl0, do
     d = a3*a4;
 
     //Result equivale a diferença entre os dois lados da igualdade que descrevem o Rendezvous
+    //Equação do Rendezvous (b-d)² = 4(a-c)(bc-ad)
     result = pow(b-d,2)-4*(a-c)*(b*c-a*d);
     
     if(DEBUG){
@@ -322,8 +330,8 @@ void brute_all(double *A, int N, double x0, double y0, double z0, double xl0, do
 *   a = 1  -> n^1
 *   a = 2  -> n^2
 * @param vex Variável física da Velocidade de exaustão no eixo X a ser calculado o valor de A
-* @param vex Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de A
-* @param vex Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de A
+* @param vey Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de A
+* @param vez Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de A
 * @returns O coeficiênte A dado os valores iniciais e as variáveis físicas a serem testadas
 */
 double brute_A (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, double X, double w, int a, double vex, double vey, double vez) {
@@ -369,8 +377,8 @@ double brute_A (int N, double x0, double y0, double z0, double xl0, double yl0, 
 *   a = 1  -> n^1
 *   a = 2  -> n^2
 * @param vex Variável física da Velocidade de exaustão no eixo X a ser calculado o valor de B
-* @param vex Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de B
-* @param vex Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de B
+* @param vey Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de B
+* @param vez Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de B
 * @returns O coeficiênte B dado os valores iniciais e as variáveis físicas a serem testadas
 */
 double brute_B (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, double X, double w, int a, double vex, double vey, double vez){
@@ -414,8 +422,8 @@ double brute_B (int N, double x0, double y0, double z0, double xl0, double yl0, 
 *   a = 1  -> n^1
 *   a = 2  -> n^2
 * @param vex Variável física da Velocidade de exaustão no eixo X a ser calculado o valor de C
-* @param vex Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de C
-* @param vex Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de C
+* @param vey Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de C
+* @param vez Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de C
 * @returns O somatório dos coeficiêntes Cn dado os valores iniciais e as variáveis físicas a serem testadas
 */
 double brute_C (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, double X, double w, int a, double vex, double vey, double vez){
@@ -456,8 +464,8 @@ double brute_C (int N, double x0, double y0, double z0, double xl0, double yl0, 
 *   a = 1  -> n^1
 *   a = 2  -> n^2
 * @param vex Variável física da Velocidade de exaustão no eixo X a ser calculado o valor de D
-* @param vex Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de D
-* @param vex Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de D
+* @param vey Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de D
+* @param vez Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de D
 * @returns O coeficiênte D dado os valores iniciais e as variáveis físicas a serem testadas
 */
 double brute_D (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, double X, double w, int a, double vex, double vey, double vez) {
@@ -489,8 +497,8 @@ double brute_D (int N, double x0, double y0, double z0, double xl0, double yl0, 
 *   a = 1  -> n^1
 *   a = 2  -> n^2
 * @param vex Variável física da Velocidade de exaustão no eixo X a ser calculado o valor de E
-* @param vex Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de E
-* @param vex Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de E
+* @param vey Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de E
+* @param vez Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de E
 * @returns O coeficiênte E dado os valores iniciais e as variáveis físicas a serem testadas
 */
 double brute_E (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, double X, double w, int a, double vex, double vey, double vez) {
@@ -521,8 +529,8 @@ double brute_E (int N, double x0, double y0, double z0, double xl0, double yl0, 
 *   a = 1  -> n^1
 *   a = 2  -> n^2
 * @param vex Variável física da Velocidade de exaustão no eixo X a ser calculado o valor de Fn
-* @param vex Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de Fn
-* @param vex Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de Fn
+* @param vey Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de Fn
+* @param vez Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de Fn
 * @returns O somatório coeficiênte Fn dado os valores iniciais e as variáveis físicas a serem testadas
 */
 double brute_F(int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, double X, double w, int a, double vex, double vey, double vez) {
@@ -568,8 +576,8 @@ double brute_F(int N, double x0, double y0, double z0, double xl0, double yl0, d
 *   a = 1  -> n^1
 *   a = 2  -> n^2
 * @param vex Variável física da Velocidade de exaustão no eixo X a ser calculado o valor de G
-* @param vex Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de G
-* @param vex Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de G
+* @param vey Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de G
+* @param vez Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de G
 * @returns O coeficiênte G dado os valores iniciais e as variáveis físicas a serem testadas
 */
 double brute_G (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, double X, double w, int a, double vex, double vey, double vez) {
@@ -611,8 +619,8 @@ double brute_G (int N, double x0, double y0, double z0, double xl0, double yl0, 
 *   a = 1  -> n^1
 *   a = 2  -> n^2
 * @param vex Variável física da Velocidade de exaustão no eixo X a ser calculado o valor de H
-* @param vex Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de H
-* @param vex Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de H
+* @param vey Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de H
+* @param vez Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de H
 * @returns O coeficiênte H dado os valores iniciais e as variáveis físicas a serem testadas
 */
 double brute_H (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, double X, double w, int a, double vex, double vey, double vez) {
@@ -654,8 +662,8 @@ double brute_H (int N, double x0, double y0, double z0, double xl0, double yl0, 
 *   a = 1  -> n^1
 *   a = 2  -> n^2
 * @param vex Variável física da Velocidade de exaustão no eixo X a ser calculado o valor de I
-* @param vex Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de I
-* @param vex Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de I
+* @param vey Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de I
+* @param vez Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de I
 * @returns O coeficiênte I dado os valores iniciais e as variáveis físicas a serem testadas
 */
 double brute_I (int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, double X, double w, int a, double vex, double vey, double vez) {
@@ -699,8 +707,8 @@ double brute_I (int N, double x0, double y0, double z0, double xl0, double yl0, 
 *   a = 1  -> n^1
 *   a = 2  -> n^2
 * @param vex Variável física da Velocidade de exaustão no eixo X a ser calculado o valor de Jn
-* @param vex Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de Jn
-* @param vex Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de Jn
+* @param vey Variável física da Velocidade de exaustão no eixo Y a ser calculado o valor de Jn
+* @param vez Variável física da Velocidade de exaustão no eixo Z a ser calculado o valor de Jn
 * @returns O somatório coeficiênte Jn dado os valores iniciais e as variáveis físicas a serem testadas
 */
 double brute_J(int N, double x0, double y0, double z0, double xl0, double yl0, double zl0, double Y, double X, double w, int a, double vex, double vey, double vez){
