@@ -19,23 +19,24 @@ Os dois outros arquivos **'v-0.004-0.005.dat'** e **'v-500-entradas.dat'** repre
 
 ### 2. Arquivos de Saída
 Esta pasta contém alguns exemplos dos arquivos gerados pelas execuções dos códigos em seus diferentes modos
-#### Debug Serial
+
+#### 2.1. Debug Serial
 O arquivo gerado pela execução serial no modo Debug contém informações de cada um dos coeficientes gerados a partir dos dados de entrada para calcular a equação que define o Rendezvous.
 
 O arquivo gerado tem o formato de separação por virgula (CSV) e seu nome é "a-output-b.csv", em que 'a' é o indice do arquivo de parâmetro iniciando pelo valor 1 e 'b' é o indice da linha do arquivo sendo lido iniciando pelo valor 0.
 
-#### Serial
+#### 2.2. Serial
 As linhas iniciais indicam os valores de entrada (posição e velocidade relativa) que geraram os resultados apresentados nas linhas seguintes.
 
-#### Paralelo
+#### 2.3. Paralelo
 O arquivo gerado é diferente do código serial, porque os calculos são executados assícronamente, erando as linhas de resultado fora de ordem. Os arquivos gerados pela execução paralela não apresentam resultados em ordem e nem um cabeçalho com os dados de entrada .
 
 Recomenda-se ter em mãos o arquivo de entrada e fazer a mesclagem da linha do arquivo de entrada com o nome do arquivo de saída.(Indice da linha = 'b' no nome a-output-b.csv)
 
 ### 3. Planilha de Testes
-Essa pasta contém uma planilha Excel que pode ser utilizada para validar os resultados gerados pelos códigos aqui apresentados. O funcionamento da planilha baseia-se em preencher os dados de entrada do Rendezvous e o conjunto das três configurações físicas (Gama, Chi, Ve). A partir da todos os valores intermediários da equações serão calculados.
+Uma planilha Excel que pode ser utilizada para validar os resultados gerados pelos códigos aqui apresentados. O funcionamento da planilha baseia-se em preencher os dados de entrada do Rendezvous e o conjunto das três configurações físicas (Gama, Chi, Ve). A partir da todos os valores intermediários da equações serão calculados.
 
-Esse arquivo  útil para verificar se o código Serial est executando corretamente, comparando o resultado da execução em modo Debug com as informações calculadas na planilha.
+Esse planilha é útil para verificar se o código Serial está executando corretamente, comparando o resultado da execução em modo Debug com as informações calculadas na planilha.
 
 ### 4. Projeto Serial
 Esta pasta contém o código desenvolvido para a execução do projeto de forma serial.Também existem informações detelhadas sobre como compilar e executar o projeto.
