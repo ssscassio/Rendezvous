@@ -29,7 +29,7 @@ O arquivo gerado tem o formato de separação por virgula (CSV) e seu nome é "a
 As linhas iniciais indicam os valores de entrada (posição e velocidade relativa) que geraram os resultados apresentados nas linhas seguintes.
 
 #### 2.3. Paralelo
-O arquivo gerado é diferente do código serial, porque os calculos são executados assícronamente, erando as linhas de resultado fora de ordem. Os arquivos gerados pela execução paralela não apresentam resultados em ordem e nem um cabeçalho com os dados de entrada .
+O arquivo gerado é diferente do resultante via código serial, porque os cálculos são executados assícronamente, gerando as linhas de resultado fora de ordem. Estes arquivos não apresentam resultados em ordem e nem um cabeçalho com os dados de entrada.
 
 Recomenda-se ter em mãos o arquivo de entrada e fazer a mesclagem da linha do arquivo de entrada com o nome do arquivo de saída.(Indice da linha = 'b' no nome a-output-b.csv)
 
