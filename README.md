@@ -25,21 +25,21 @@ O arquivo gerado pela execução serial no modo Debug contém informações de c
 O arquivo gerado tem o formato de separação por virgula (CSV) e seu nome é "a-output-b.csv", em que 'a' é o indice do arquivo de parâmetro iniciando pelo valor 1 e 'b' é o indice da linha do arquivo sendo lido iniciando pelo valor 0.
 
 #### Serial
-Nas linhas iniciais existe um cabeçalho indicando os valores de entrada (posição e velocidade relativa) que geraram os resultados apresentados nas linhas seguintes.
+As linhas iniciais indicam os valores de entrada (posição e velocidade relativa) que geraram os resultados apresentados nas linhas seguintes.
 
 #### Paralelo
-O arquivo gerado é diferente do código serial, devido a execução dos calculos serem feitas de forma paralela e portanto gerando as linhas de resultado fora de ordem. Os arquivos gerados pela execução paralela não apresentam uma ordem e nem um cabeçalho com os dados de entrada para essa execução.
+O arquivo gerado é diferente do código serial, porque os calculos são executados assícronamente, erando as linhas de resultado fora de ordem. Os arquivos gerados pela execução paralela não apresentam resultados em ordem e nem um cabeçalho com os dados de entrada .
 
 Recomenda-se ter em mãos o arquivo de entrada e fazer a mesclagem da linha do arquivo de entrada com o nome do arquivo de saída.(Indice da linha = 'b' no nome a-output-b.csv)
 
 ### 3. Planilha de Testes
-Essa pasta contém um arquivo de planilha no formato .xsls e pode ser utilizado para validar os resultados gerados pelos códigos aqui apresentados. A sua estrutra baseia-se em preencher os dados do arquivo de entrada do Rendezvous e escolher para qual conjunto das três configurações físicas (Gama, Chi, Ve) você deseja verificar passo a passo o desenvolvimento da equação do Rendezvous.
+Essa pasta contém uma planilha Excel que pode ser utilizada para validar os resultados gerados pelos códigos aqui apresentados. O funcionamento da planilha baseia-se em preencher os dados de entrada do Rendezvous e o conjunto das três configurações físicas (Gama, Chi, Ve). A partir da todos os valores intermediários da equações serão calculados.
 
-Você pode verificar se tudo está correto no código Serial por exemplo, comparando o resultado da execução em modo Debug com as informações apresentadas nessa planilha
+Esse arquivo  útil para verificar se o código Serial est executando corretamente, comparando o resultado da execução em modo Debug com as informações calculadas na planilha.
 
 ### 4. Projeto Paralelo (CUDA)
-Esta pasta contém os códigos desenvolvidos e necessários para a execução do projeto na arquitetura CUDA.
-Nessa pasta podem ser encontradas informações mais detelhadas de como compilar e executar o projeto
+Esta pasta contém os códigos para a execução do projeto na arquitetura CUDA. Também existem informações detelhadas sobre como compilar e executar o projeto.
+
 ### 5. Projeto Serial
-Esta pasta contém o códigod desenvolvido para a execução do projeto de forma serial.
-Nessa pasta podem ser encontradas informações mais detelhadas de como compilar e executar o projeto
+Esta pasta contém o código desenvolvido para a execução do projeto de forma serial.Também existem informações detelhadas sobre como compilar e executar o projeto.
+
