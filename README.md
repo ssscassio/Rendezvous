@@ -20,19 +20,17 @@ Os dois outros arquivos **'v-0.004-0.005.dat'** e **'v-500-entradas.dat'** repre
 ### 2. Arquivos de Saída
 Esta pasta contém alguns exemplos dos arquivos gerados pelas execuções dos códigos em seus diferentes modos
 #### Debug Serial
-O arquivo gerado pela execução serial no modo Debug contém informações de cada um dos coeficientes gerados a partir dos dados de entrada para realizar a equação que define o Rendezvous
-#### Serial
-O nome do arquivo de saída é no formato a-output-b.csv onde a é o indice do arquivo de parâmetro iniciando pelo valor 1 e b é o indice da linha do arquivo sendo lido iniciando pelo valor 0.
+O arquivo gerado pela execução serial no modo Debug contém informações de cada um dos coeficientes gerados a partir dos dados de entrada para calcular a equação que define o Rendezvous.
 
-O arquivo gerado tem o formato de separação por virgula (Comma Separated .csv) e apresenta nas suas linhas iniciais um cabeçalho indicando os valores de entrada (posição e velocidade relativa) que tal este resultado
+O arquivo gerado tem o formato de separação por virgula (CSV) e seu nome é "a-output-b.csv", em que 'a' é o indice do arquivo de parâmetro iniciando pelo valor 1 e 'b' é o indice da linha do arquivo sendo lido iniciando pelo valor 0.
+
+#### Serial
+Nas linhas iniciais existe um cabeçalho indicando os valores de entrada (posição e velocidade relativa) que geraram os resultados apresentados nas linhas seguintes.
 
 #### Paralelo
-O nome do arquivo de saída é no formato a-output-b.csv onde a é o indice do arquivo de parâmetro iniciando pelo valor 1 e b é o indice da linha do arquivo sendo lido iniciando pelo valor 0.
+O arquivo gerado é diferente do código serial, devido a execução dos calculos serem feitas de forma paralela e portanto gerando as linhas de resultado fora de ordem. Os arquivos gerados pela execução paralela não apresentam uma ordem e nem um cabeçalho com os dados de entrada para essa execução.
 
-O arquivo gerado tem o formato de separação por virgula (Comma Separated .csv) e diferente do código serial, devido a execução dos calculos serem feitas de forma paralela e portanto executando os prints de forma randomica, os arquivos gerados pela execução paralela não apresentam uma ordem e nem um cabeçalho com os dados de entrada para essa execução
-
-Recomenda-se ter em mãos o arquivo de entrada e fazer a mesclagem da linha do arquivo de entrada com o nome do arquivo de saída.(Indice da linha = b em a-output-b.csv)
-
+Recomenda-se ter em mãos o arquivo de entrada e fazer a mesclagem da linha do arquivo de entrada com o nome do arquivo de saída.(Indice da linha = 'b' no nome a-output-b.csv)
 
 ### 3. Planilha de Testes
 Essa pasta contém um arquivo de planilha no formato .xsls e pode ser utilizado para validar os resultados gerados pelos códigos aqui apresentados. A sua estrutra baseia-se em preencher os dados do arquivo de entrada do Rendezvous e escolher para qual conjunto das três configurações físicas (Gama, Chi, Ve) você deseja verificar passo a passo o desenvolvimento da equação do Rendezvous.
