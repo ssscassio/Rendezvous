@@ -37,9 +37,9 @@ Essa pasta contém uma planilha Excel que pode ser utilizada para validar os res
 
 Esse arquivo  útil para verificar se o código Serial est executando corretamente, comparando o resultado da execução em modo Debug com as informações calculadas na planilha.
 
-### 4. Projeto Paralelo (CUDA)
-Esta pasta contém os códigos para a execução do projeto na arquitetura CUDA. Também existem informações detelhadas sobre como compilar e executar o projeto.
-
-### 5. Projeto Serial
+### 4. Projeto Serial
 Esta pasta contém o código desenvolvido para a execução do projeto de forma serial.Também existem informações detelhadas sobre como compilar e executar o projeto.
+
+### 5. Projeto Paralelo (CUDA)
+Esta pasta contém os códigos para a execução do projeto na arquitetura CUDA. Também existem informações detelhadas sobre como compilar e executar o projeto.
 
