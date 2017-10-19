@@ -11,19 +11,19 @@ Estas instruções permitirão, caso tenha previamente o conjuto de variáveis q
 Para compilar o projeto:
 
 ```
-gcc -o rendezvous rendezvousSerial.c -lm -std=c99 -Wall -O3
+gcc  -lm -std=c99 -Wall -O3 -o rendezvous rendezvousSerial.c
 ```
 
 ### Executando o projeto
 
-Necessita de pelo menos um arquivo de entrada *input.dat* no qual cada uma das linhas representa um conjunto de variáveis de entrada das quais são respectivamente:
+É necessário fornecer um arquivo texto de entrada com extensão ".dat" contento um conjunto de variáveis de entrada por linha. As variáveis de entrada devem ser separadas por espaço e organizadas na seguinte sequência:
 ```
-Tempo Alpha Beta X0 y0 z0 r0 xl0 yl0 zl0 |Vi| xf yf zf rf dxf dyf dzf |Vf|
+Tempo Alpha Beta x0 y0 z0 r0 xl0 yl0 zl0 |Vi| xf yf zf rf dxf dyf dzf |Vf|
 ``` 
 
 Os arquivos de saida irão conter uma linha inicial contendo os valores de entrada e em seqeência  as icognitas físicas descobertas bem como o resultado da equação.
 
-Para executar o código execute o comando:
+Para executar o código execute o comando abaixo, indicando os nomes dos arquivos de entrada:
 ```
 ./rendezvous input1.dat input2.dat
 ```
@@ -53,13 +53,12 @@ Nos quais os indices representam respectivamente o arquivo de entrada e a linha 
 
 
 ### Modo Debug
-Para executar o código em modo Debug e encontrar o valor da função de Rendezvous para apenas 1 conjunto de dados especifivo, necessita de um arquivo com os seguintes conjuntos de dados.
-Dispostos em uma unica linha do arquivo:
+Para executar o código em modo Debug e encontrar o valor da função de Rendezvous para apenas 1 conjunto de dados especifivo, necessita-se de um arquivo com os seguintes conjuntos de dados dispostos em uma unica linha:
 ```
 Tempo Alpha Beta X0 y0 z0 r0 xl0 yl0 zl0 |Vi| xf yf zf rf dxf dyf dzf |Vf| gama chi ve vex vey vez
 ```
 
-o arquivo de saida conterá linhas correspondentes a cada uma das variaveis durante o processo de Debug as quais podem ser comparadas com os resultados obtidos através do arquivo `.xlsx` dentro do caminho `Projeto/Teste`
+O arquivo de saida conterá linhas correspondentes a cada uma das variaveis durante o processo de Debug as quais podem ser comparadas com os resultados obtidos através do arquivo `.xlsx` dentro do caminho `Projeto/Teste`
 
 Para executar o código em modo debug execute o comando:
 ```
