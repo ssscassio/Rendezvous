@@ -12,7 +12,7 @@ Esta pasta contém exemplos dos arquivos de entrada que devem ser utilizados par
 Esta pasta contém um exemplo de arquivo para executar o teste em modo debug do código Serial do Rendezvous. Este arquivo deve conter apenas uma linha com a seguinte ordem de termos:
 
 ```
-Tempo Alpha Beta X0 y0 z0 r0 xl0 yl0 zl0 |Vi| xf yf zf rf dxf dyf dzf |Vf| gama chi ve vex vey vez
+Tempo Alpha Beta x0 y0 z0 r0 xl0 yl0 zl0 |Vi| xf yf zf rf dxf dyf dzf |Vf| gama chi ve vex vey vez
 ```
 
 Os dois outros arquivos **'v-0.004-0.005.dat'** e **'v-500-entradas.dat'** representam respectivamente um arquivo de entrada real da pesquisa do Rendezvous e um arquivo de entrada limitado a 500 linhas de conjuntos de parâmetros 
