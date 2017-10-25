@@ -1,6 +1,6 @@
 # Rendezvous
 
-Projeto para encontrar as variáveis físicas capazes de tornar o Rendezvous (Encontro com posição e velocidade relativa iguais a 0) de um veiculo espacial com um detrito em orbita possível.
+Projeto para encontrar as variáveis físicas capazes de tornar o Rendezvous (Encontro com posição e velocidade relativa iguais a 0) de um veículo espacial com um detrito em órbita possível.
 
 ## Organização de Pastas
 
